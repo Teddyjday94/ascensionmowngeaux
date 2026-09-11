@@ -70,3 +70,18 @@ test('stylesheet contains the approved responsive visual system', () => {
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /max-width:\s*390px/);
 });
+
+test('homepage follows the proof-first content flow', () => {
+  const html = htmlFor('index.html');
+  const orderedMarkers = [
+    'class="hero"',
+    'class="trust-strip"',
+    'id="services"',
+    'class="project-proof"',
+    'class="cta-band"',
+  ];
+  const positions = orderedMarkers.map((marker) => html.indexOf(marker));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual([...positions].sort((a, b) => a - b), positions);
+  assert.doesNotMatch(html, /What people are saying|Placeholder quotes|Prairieville homeowner|Gonzales homeowner/);
+});
