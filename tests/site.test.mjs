@@ -67,6 +67,7 @@ test('stylesheet contains the approved responsive visual system', () => {
   for (const selector of ['.trust-strip', '.service-card', '.project-proof', '.nav-backdrop', 'body.nav-open']) {
     assert.ok(css.includes(selector), `missing ${selector}`);
   }
+  assert.match(css, /html\s*\{[\s\S]*?overflow-x:\s*clip;/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /max-width:\s*390px/);
 });

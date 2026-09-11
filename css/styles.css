@@ -41,6 +41,8 @@
 * { box-sizing: border-box; }
 
 html {
+  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
   background: var(--pine-950);
 }
@@ -1038,14 +1040,16 @@ textarea { font: inherit; }
     color: var(--cream-50);
     border-left: 1px solid var(--line-dark);
     background: var(--pine-950);
-    transform: translateX(102%);
+    clip-path: inset(0 0 0 100%);
     visibility: hidden;
-    transition: transform 220ms ease, visibility 220ms ease;
+    pointer-events: none;
+    transition: clip-path 220ms ease, visibility 220ms ease;
   }
 
   .main-nav.open {
-    transform: translateX(0);
+    clip-path: inset(0);
     visibility: visible;
+    pointer-events: auto;
   }
 
   .nav-list {
