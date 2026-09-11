@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Get a Free Quote | Ascension Mow N' Geaux</title>
 <meta name="description" content="Request a free lawn care or landscaping quote from Ascension Mow N' Geaux, serving Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana.">
+<link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
 <header class="site-header">
   <div class="container">
     <a class="logo" href="index.html">
-      <span class="mark">AMG</span>
+      <span class="mark"><img src="images/logo.png" alt="Ascension Mow N' Geaux logo"></span>
       Ascension Mow N' Geaux
     </a>
     <nav class="main-nav" aria-label="Primary">
@@ -51,11 +52,12 @@
 
 <section class="section-white">
   <div class="container split-block">
-    <form class="quote-form" action="#" method="POST">
+    <form class="quote-form" id="quote-form" action="#" method="POST">
       <!--
         Hand off note: wire this to a form backend before launch
         (Formspree, Web3Forms, or a simple serverless function).
-        Fields below mirror the original site's quote request intent.
+        For now, submitting opens the visitor's email client with
+        the details pre-filled, addressed to amngllc@gmail.com.
       -->
       <div class="form-row">
         <div class="field">
@@ -94,7 +96,7 @@
         <textarea id="message" name="message" placeholder="Lot size, current condition, what you're looking to have done..."></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Request My Quote</button>
-      <p class="form-note">We usually respond within one business day.</p>
+      <p class="form-note" id="form-note">We usually respond within one business day.</p>
     </form>
 
     <div>
@@ -116,7 +118,7 @@
       <p class="kicker">Service Area</p>
       <h2>Where we work.</h2>
     </div>
-    <div class="value-grid" style="color:var(--ink);">
+    <div class="value-grid">
       <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Prairieville</h3></div>
       <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Gonzales</h3></div>
       <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Baton Rouge</h3></div>
@@ -129,7 +131,7 @@
   <div class="container footer-grid">
     <div>
       <div class="footer-logo">
-        <span class="mark" style="background:var(--gold);color:var(--pine-deep);">AMG</span>
+        <span class="mark"><img src="images/logo.png" alt="Ascension Mow N' Geaux logo"></span>
         Ascension Mow N' Geaux
       </div>
       <p style="font-size:0.9rem; max-width:32ch;">Family-run lawn care and landscaping, serving Ascension and Livingston Parishes since 2015.</p>
@@ -167,5 +169,24 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script>
+  // Temporary client-side handoff until a real form backend is wired up.
+  document.getElementById('quote-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var lines = [
+      'Name: ' + f.name.value,
+      'Phone: ' + f.phone.value,
+      'Email: ' + f.email.value,
+      'Address: ' + (f.address.value || '-'),
+      'Service: ' + (f.service.value || 'Not specified'),
+      'Message: ' + (f.message.value || '-')
+    ];
+    var subject = encodeURIComponent('Quote Request - ' + f.name.value);
+    var body = encodeURIComponent(lines.join('\n'));
+    window.location.href = 'mailto:amngllc@gmail.com?subject=' + subject + '&body=' + body;
+    document.getElementById('form-note').textContent = 'Opening your email app to send this request...';
+  });
+</script>
 </body>
 </html>

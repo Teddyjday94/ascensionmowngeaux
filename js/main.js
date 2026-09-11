@@ -24,17 +24,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Lightbox for gallery pages
+  // Lightbox for gallery pages — shows the real photo, falls back to a label
   var galleryItems = document.querySelectorAll('[data-lightbox-label]');
   var lightbox = document.querySelector('.lightbox');
 
   if (galleryItems.length && lightbox) {
-    var lightboxLabel = lightbox.querySelector('.lightbox-inner .photo-placeholder');
+    var lightboxInner = lightbox.querySelector('.lightbox-inner');
     var closeBtn = lightbox.querySelector('.lightbox-close');
 
     galleryItems.forEach(function (item) {
       item.addEventListener('click', function () {
-        lightboxLabel.textContent = item.getAttribute('data-lightbox-label');
+        var fullSrc = item.getAttribute('data-full') || item.querySelector('img') && item.querySelector('img').getAttribute('src');
+        var label = item.getAttribute('data-lightbox-label') || '';
+        if (fullSrc) {
+          lightboxInner.innerHTML = '<img src="' + fullSrc + '" alt="' + label.replace(/"/g, '&quot;') + '">';
+        } else {
+          lightboxInner.innerHTML = '<div class="photo-placeholder">' + label + '</div>';
+        }
         lightbox.classList.add('open');
       });
     });
