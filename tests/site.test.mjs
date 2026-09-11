@@ -85,3 +85,14 @@ test('homepage follows the proof-first content flow', () => {
   assert.deepEqual([...positions].sort((a, b) => a - b), positions);
   assert.doesNotMatch(html, /What people are saying|Placeholder quotes|Prairieville homeowner|Gonzales homeowner/);
 });
+
+test('story and service pages use shared page shells without inline presentation', () => {
+  const contentPages = pages.filter((page) => page === 'our-story.html' || page.startsWith('services/'));
+  for (const page of contentPages) {
+    const html = htmlFor(page);
+    assert.match(html, /class="page-header/);
+    assert.match(html, /class="site-footer/);
+    assert.doesNotMatch(html, /style="/);
+    assert.doesNotMatch(html, /coming-soon/i);
+  }
+});

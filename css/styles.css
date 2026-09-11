@@ -970,6 +970,11 @@ textarea { font: inherit; }
 .site-footer li,
 .site-footer a { color: #aebbb2; }
 
+.footer-summary {
+  max-width: 32ch;
+  font-size: 0.9rem;
+}
+
 .site-footer ul {
   margin: 0;
   padding: 0;
