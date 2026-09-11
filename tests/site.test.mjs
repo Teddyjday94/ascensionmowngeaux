@@ -58,3 +58,15 @@ test('shared script closes menus through all required paths', () => {
   assert.match(script, /nav-backdrop/);
   assert.match(script, /document\.body\.classList\.toggle\('nav-open'/);
 });
+
+test('stylesheet contains the approved responsive visual system', () => {
+  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
+  for (const token of ['--pine-950', '--pine-800', '--grass-500', '--cream-50', '--ink-900']) {
+    assert.ok(css.includes(token), `missing ${token}`);
+  }
+  for (const selector of ['.trust-strip', '.service-card', '.project-proof', '.nav-backdrop', 'body.nav-open']) {
+    assert.ok(css.includes(selector), `missing ${selector}`);
+  }
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /max-width:\s*390px/);
+});
