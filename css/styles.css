@@ -248,6 +248,51 @@ p { margin: 0 0 1em; max-width: 62ch; color: var(--text-muted); }
   margin: 4px 0;
 }
 
+.logo img {
+  width: 118px;
+  height: 74px;
+  object-fit: contain;
+}
+
+.services-control {
+  display: flex;
+  align-items: center;
+}
+
+.services-toggle {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.services-toggle span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.has-dropdown.services-open .dropdown { display: block; }
+.has-dropdown.services-open .services-toggle span { transform: translateY(2px) rotate(225deg); }
+
+.nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: 0;
+  background: rgba(0, 0, 0, 0.56);
+}
+
+.nav-backdrop[hidden] { display: none; }
+body.nav-open { overflow: hidden; }
+
 @media (max-width: 900px) {
   .main-nav {
     position: fixed;
@@ -266,9 +311,11 @@ p { margin: 0 0 1em; max-width: 62ch; color: var(--text-muted); }
   .main-nav a { display: block; padding: 0.7rem 0; }
   .dropdown { position: static; box-shadow: none; display: block; border: none; padding-left: 1rem; background: transparent; }
   .has-dropdown .dropdown { display: none; }
-  .has-dropdown.open .dropdown { display: block; }
+  .has-dropdown.services-open .dropdown { display: block; }
   .header-cta { margin-top: 1rem; justify-content: center; }
-  .nav-toggle { display: block; }
+  .nav-toggle { display: block; position: relative; z-index: 70; }
+  .main-nav { z-index: 60; }
+  .nav-backdrop:not([hidden]) { display: block; }
 }
 
 /* ---------- Mowing-stripe divider ---------- */
