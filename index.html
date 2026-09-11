@@ -1,275 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ascension Mow N' Geaux | Lawn Care & Landscaping in Prairieville, LA</title>
-<meta name="description" content="Lawn care, landscaping, irrigation, and outdoor maintenance for Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana. Family-run since 2015.">
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascension Mow N' Geaux | Lawn Care & Landscaping | Prairieville & Gonzales, LA</title>
+  <meta name="description" content="Ascension Mow N' Geaux LLC provides lawn maintenance, landscape design, sod installation, dirt work, pressure washing and irrigation services across Ascension Parish, Louisiana.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #07150c;
+      --bg-card: #0e2417;
+      --bg-card-hover: #153321;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(34, 197, 94, 0.3);
+      --accent-green: #22c55e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-main); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+    /* Buttons & Badges */
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--border-accent); border-radius: 50px; color: var(--accent-green); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; font-weight: 700; border-radius: var(--radius-sm); transition: var(--transition); cursor: pointer; border: none; font-size: 1rem; }
+    .btn-primary { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3); }
+    .btn-outline { background: rgba(255, 255, 255, 0.03); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-outline:hover { border-color: var(--accent-green); }
+
+    /* Typography */
+    .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin: 12px 0 16px; }
+    .section-subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin-bottom: 40px; }
+
+    /* Navbar */
+    .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 14px 0; background: rgba(7, 21, 12, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .brand-logo { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 800; }
+    .brand-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a:hover { color: var(--accent-green); }
+
+    /* Hero */
+    .hero { padding: 180px 0 100px; text-align: center; background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.15) 0%, transparent 60%); }
+    .hero-title { font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 800; margin: 24px auto; line-height: 1.1; max-width: 900px; }
+    .hero-title span { color: var(--accent-green); }
+    .hero-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px; }
+
+    /* Services Grid */
+    .services { padding: 80px 0; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 32px; transition: var(--transition); }
+    .service-card:hover { transform: translateY(-5px); border-color: var(--accent-green); }
+    .service-card h3 { font-size: 1.2rem; margin-bottom: 12px; color: var(--text-main); }
+    .service-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; }
+    .price-tag { display: inline-block; font-size: 0.8rem; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; color: var(--accent-green); margin-bottom: 12px; }
+
+    /* Interactive Multi-Page Gallery */
+    .gallery { padding: 80px 0; background: rgba(255, 255, 255, 0.01); }
+    .gallery-filters { display: flex; gap: 12px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+    .filter-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-weight: 600; font-family: var(--font-main); }
+    .filter-btn.active, .filter-btn:hover { background: var(--accent-green); color: #fff; border-color: var(--accent-green); }
+
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .gallery-item { height: 260px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color); display: block; color: var(--text-muted); transition: var(--transition); overflow: hidden; position: relative; }
+    .gallery-item:hover { border-color: var(--accent-green); transform: translateY(-3px); }
+    .gallery-item[style*="display: none"] { margin: 0; padding: 0; border: none; } /* Hides smoothly */
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: var(--transition); }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 16px 12px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); font-size: 0.85rem; font-weight: 600; color: #fff; }
+
+    /* Dedicated Quote Form Section */
+    .quote-section { padding: 100px 0; }
+    .quote-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; }
+    .form-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 40px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #fff; font-family: var(--font-main); }
+    .form-control:focus { outline: none; border-color: var(--accent-green); }
+
+    .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted); }
+    .checkbox-group input { margin-top: 4px; width: 16px; height: 16px; accent-color: var(--accent-green); flex-shrink: 0; }
+
+    .form-divider { margin: 32px 0 24px; border-bottom: 1px solid var(--border-color); }
+    .form-label { display: block; font-weight: 700; margin-bottom: 16px; color: #fff; font-size: 0.95rem; }
+
+    .file-upload { border: 2px dashed var(--border-color); padding: 40px; text-align: center; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .file-upload:hover { border-color: var(--accent-green); background: rgba(34,197,94,0.05); }
+
+    .why-choose-us h3 { font-size: 1.4rem; color: var(--accent-green); margin-bottom: 12px; }
+    .why-choose-us p { color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+
+    /* Footer */
+    .footer { padding: 48px 0; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+    .footer a:hover { color: var(--accent-green); }
+    .footer-brand { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
+    .footer-brand img { width: 32px; height: 32px; object-fit: contain; }
+    .footer-links { display: flex; gap: 20px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+
+    @media (max-width: 992px) {
+      .quote-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container">
-    <a class="logo" href="index.html">
-      <span class="mark">AMG</span>
-      Ascension Mow N' Geaux
-    </a>
-    <nav class="main-nav" aria-label="Primary">
-      <ul>
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="our-story.html">Our Story</a></li>
-        <li class="has-dropdown">
-          <a href="services/lawn-care.html">Services</a>
-          <ul class="dropdown">
-            <li><a href="services/lawn-care.html">Lawn Care</a></li>
-            <li><a href="services/landscaping.html">Landscaping</a></li>
-            <li><a href="services/irrigation.html">Irrigation</a></li>
-            <li><a href="services/landscape-lighting.html">Landscape Lighting</a></li>
-            <li><a href="services/bush-hogging.html">Bush Hogging</a></li>
-            <li><a href="services/fencing.html">Fencing</a></li>
-            <li><a href="services/soft-washing-pressure-washing.html">Soft Washing &amp; Pressure Washing</a></li>
-          </ul>
-        </li>
-        <li><a href="gallery.html">Gallery</a></li>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon"><img src="images/logo.png" alt="Ascension Mow N' Geaux logo"></div>
+        <div>ASCENSION <span style="color:var(--accent-green)">MOW N' GEAUX</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#quote">Get A Quote</a></li>
       </ul>
-      <a class="header-cta" href="request-a-quote.html">Get a Quote</a>
-    </nav>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</header>
+      <a href="tel:2253331991" class="btn btn-outline">📞 CALL NOW</a>
+    </div>
+  </nav>
 
-<section class="hero">
-  <div class="container">
-    <div>
-      <p class="hero-eyebrow">Serving Ascension &amp; Livingston Parishes since 2015</p>
-      <h1>Lawns that hold their line, land that earns its keep.</h1>
-      <p class="lede">We mow, plant, wire, and clear outdoor spaces across Prairieville, Gonzales, Baton Rouge, and Livingston. Same crew every visit, no chasing us down for a callback.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="request-a-quote.html">Get a Free Quote</a>
-        <a class="btn btn-outline on-dark" href="tel:12253331991">Call (225) 333-1991</a>
-      </div>
-      <p class="hero-service-area">Prairieville &middot; Gonzales &middot; Baton Rouge &middot; Livingston</p>
-    </div>
-    <div class="hero-photo">
-      <div class="photo-placeholder">PHOTO&#10;Freshly striped residential lawn, wide shot&#10;(swap in client photo)</div>
-    </div>
-  </div>
-</section>
-
-<div class="stripe-divider" role="presentation"></div>
-
-<section class="section-white">
-  <div class="container split-block">
-    <div>
-      <p class="section-head kicker">Since 2015</p>
-      <h2>Built by people who actually show up.</h2>
-      <p>Ascension Mow N' Geaux started as one crew with one mower and a habit of finishing what we said we would. Eleven years later, we still run the same way: the same faces on your property, real communication when plans change, and work that holds up after we've left.</p>
-      <p>We handle everything from weekly mowing to full landscape builds, so you can call one number instead of five.</p>
-      <a class="btn btn-outline" href="our-story.html">Read Our Story</a>
-    </div>
-    <div class="split-media">
-      <div class="photo-placeholder">PHOTO&#10;Crew at work / wide property shot</div>
-      <div class="photo-placeholder light">PHOTO&#10;Detail shot</div>
-      <div class="photo-placeholder light">PHOTO&#10;Detail shot</div>
-    </div>
-  </div>
-</section>
-
-<section class="section-parchment">
-  <div class="container">
-    <div class="section-head">
-      <p class="kicker">What We Do</p>
-      <h2>Seven services, one crew.</h2>
-    </div>
-    <div class="services-grid">
-      <a class="service-tile" href="services/lawn-care.html">
-        <span class="tile-index">01</span>
-        <h3>Lawn Care</h3>
-        <p>Mowing, edging, fertilization, and weed control for lawns that stay green through the season.</p>
-      </a>
-      <a class="service-tile" href="services/landscaping.html">
-        <span class="tile-index">02</span>
-        <h3>Landscaping</h3>
-        <p>Design, mulch, sod, and drainage work that reshapes how a property looks and drains.</p>
-      </a>
-      <a class="service-tile" href="services/irrigation.html">
-        <span class="tile-index">03</span>
-        <h3>Irrigation</h3>
-        <p>Sprinkler installs, drip lines, seasonal adjustments, and repairs.</p>
-      </a>
-      <a class="service-tile" href="services/landscape-lighting.html">
-        <span class="tile-index">04</span>
-        <h3>Landscape Lighting</h3>
-        <p>Pathway, uplighting, and accent fixtures for evenings you actually want to be outside for.</p>
-      </a>
-      <a class="service-tile" href="services/bush-hogging.html">
-        <span class="tile-index">05</span>
-        <h3>Bush Hogging</h3>
-        <p>Clearing overgrown fields, pastures, and lots, fast.</p>
-      </a>
-      <a class="service-tile" href="services/fencing.html">
-        <span class="tile-index">06</span>
-        <h3>Fencing</h3>
-        <p>Pine and wood fencing built for privacy and Louisiana weather.</p>
-      </a>
-      <a class="service-tile" href="services/soft-washing-pressure-washing.html">
-        <span class="tile-index">07</span>
-        <h3>Soft Washing &amp; Pressure Washing</h3>
-        <p>Driveways, siding, and walkways, cleaned without damaging the surface underneath.</p>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="section-white">
-  <div class="container">
-    <div class="section-head">
-      <p class="kicker">A Closer Look</p>
-      <h2>Two jobs, done right.</h2>
-    </div>
-
-    <div class="spotlight">
-      <div class="photo-placeholder spotlight-photo">PHOTO&#10;Residential lawn, before/after or wide shot</div>
-      <div>
-        <h3>Residential lawn care</h3>
-        <p>Weekly and biweekly mowing plans built around how your yard actually grows, not a fixed calendar. We edge every visit, clean up clippings, and flag problems (bare patches, drainage, pests) before they spread.</p>
-        <a class="btn btn-outline" href="services/lawn-care.html">See Lawn Care</a>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">Prairieville &amp; Gonzales Premier Lawn Care</div>
+      <h1 class="hero-title">Your Landscape, <br><span>Our Priority.</span></h1>
+      <p class="hero-desc">From precise weekly maintenance to complete landscape builds and land clearing, we provide effortless outdoor solutions tailored to your property.</p>
+      <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="#quote" class="btn btn-primary">Start Your Project Form</a>
+        <a href="#services" class="btn btn-outline">View All Services</a>
       </div>
     </div>
+  </section>
 
-    <div class="spotlight reverse">
-      <div class="photo-placeholder spotlight-photo">PHOTO&#10;Landscape install, mulch beds or sod</div>
-      <div>
-        <h3>Landscaping &amp; installs</h3>
-        <p>Mulch, sod, drainage, and full bed redesigns. We handle the dirt work and the finish work, so you get one crew and one timeline instead of coordinating three contractors.</p>
-        <a class="btn btn-outline" href="services/landscaping.html">See Landscaping</a>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- SERVICES GRID (Pulled directly from form options) -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section-title">Comprehensive Services</h2>
+      <p class="section-subtitle">Select any combination of these services when filling out your project request form below.</p>
 
-<section class="section-pine">
-  <div class="container">
-    <div class="section-head">
-      <p class="kicker">Why Choose Us</p>
-      <h2>What eleven years on the job taught us.</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="price-tag">$50 Minimum</div>
+          <h3>Lawn Maintenance</h3>
+          <p>Complete yard upkeep including professional cutting, string trimming, edging, and debris blowing.</p>
+        </div>
+        <div class="service-card">
+          <h3>Landscape Clean Up</h3>
+          <p>Restore your beds with detailed hedge pruning, thorough weed removal, and fresh mulch installation.</p>
+        </div>
+        <div class="service-card">
+          <h3>Landscape Design Build</h3>
+          <p>Full-scale transformations: Custom design, demolition of old beds, new plant installation, and ongoing maintenance.</p>
+        </div>
+        <div class="service-card">
+          <div class="price-tag">$80 Minimum</div>
+          <h3>Herbicide Application</h3>
+          <p>Targeted weed control utilizing both non-selective and selective herbicide treatments for healthy grass.</p>
+        </div>
+        <div class="service-card">
+          <h3>Dump Trailer Services</h3>
+          <p>Heavy lifting handled. We provide bulk material delivery and large-scale debris haul-off.</p>
+        </div>
+        <div class="service-card">
+          <h3>Sod Installation</h3>
+          <p>Instant green lawns. We manage the entire process: soil prep, direct delivery, and professional installation.</p>
+        </div>
+        <div class="service-card">
+          <h3>Dirt Work</h3>
+          <p>Prepare your land properly with our grading, leveling, and excavation services.</p>
+        </div>
+        <div class="service-card">
+          <h3>Pressure Washing</h3>
+          <p>Revitalize your hardscapes. We wash driveways, patios, walkways, and wooden/vinyl fences.</p>
+        </div>
+        <div class="service-card">
+          <h3>Irrigation</h3>
+          <p>Keep your lawn hydrated. Services include start-up, shutdown, new install, repair, and replacements.</p>
+        </div>
+      </div>
     </div>
-    <div class="value-grid">
-      <div class="value-item">
-        <div class="value-mark">1</div>
-        <h3>Full-service, one crew</h3>
-        <p>Mowing to hardscaping to lighting. You call once, not four different companies.</p>
-      </div>
-      <div class="value-item">
-        <div class="value-mark">2</div>
-        <h3>Same crew, every visit</h3>
-        <p>We build relationships with properties over years, not one-off appointments.</p>
-      </div>
-      <div class="value-item">
-        <div class="value-mark">3</div>
-        <h3>Licensed and insured</h3>
-        <p>Work backed by real coverage, so your property is protected too.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="section-parchment">
-  <div class="container">
-    <div class="section-head">
-      <p class="kicker">Customers</p>
-      <h2>What people are saying.</h2>
-    </div>
-    <div class="testimonial-row">
-      <div class="testimonial">
-        <p class="quote">"They mow the same day every week and text if anything changes. Never had to chase them down."</p>
-        <p class="attribution">Prairieville homeowner</p>
+  <!-- MULTI-PAGE GALLERY SECTION -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <div style="text-align: center;">
+        <h2 class="section-title">Our Work</h2>
+        <p class="section-subtitle" style="margin: 0 auto 30px;">Explore recent projects across Ascension Parish.</p>
       </div>
-      <div class="testimonial">
-        <p class="quote">"Redid our drainage and flower beds in a weekend. Yard hasn't flooded since."</p>
-        <p class="attribution">Gonzales homeowner</p>
+
+      <!-- Tab Filters -->
+      <div class="gallery-filters">
+        <button class="filter-btn active" onclick="filterGallery('all', event)">All Work</button>
+        <button class="filter-btn" onclick="filterGallery('maintenance', event)">Lawn Maintenance</button>
+        <button class="filter-btn" onclick="filterGallery('landscape', event)">Landscaping &amp; Sod</button>
+        <button class="filter-btn" onclick="filterGallery('hardscape', event)">Dirt Work &amp; Washing</button>
       </div>
-      <div class="testimonial">
-        <p class="quote">"Handles our office park's grounds. Reliable, and they actually answer the phone."</p>
-        <p class="attribution">Baton Rouge property manager</p>
+
+      <!-- Gallery Grid -->
+      <div class="gallery-grid" id="gallery-grid">
+
+        <!-- Lawn Maintenance -->
+        <a class="gallery-item maintenance" href="images/commercial-mowing-estate.jpg" target="_blank">
+          <img src="images/commercial-mowing-estate.jpg" alt="Freshly mowed estate lawn" loading="lazy">
+          <div class="gallery-caption">Commercial / Estate Mowing</div>
+        </a>
+        <a class="gallery-item maintenance" href="images/fresh-mow-lawn.jpg" target="_blank">
+          <img src="images/fresh-mow-lawn.jpg" alt="Fresh cut and edged lawn" loading="lazy">
+          <div class="gallery-caption">Fresh Cut &amp; Edge</div>
+        </a>
+        <a class="gallery-item maintenance" href="images/fresh-mow-driveway.jpg" target="_blank">
+          <img src="images/fresh-mow-driveway.jpg" alt="Manicured lawn along driveway" loading="lazy">
+          <div class="gallery-caption">Weekly Lawn Maintenance</div>
+        </a>
+        <a class="gallery-item maintenance" href="images/zero-turn-mower.jpg" target="_blank">
+          <img src="images/zero-turn-mower.jpg" alt="Zero-turn mower equipment" loading="lazy">
+          <div class="gallery-caption">Our Equipment</div>
+        </a>
+
+        <!-- Landscaping & Sod -->
+        <a class="gallery-item landscape" href="images/landscape-bed-mulch-01.jpg" target="_blank">
+          <img src="images/landscape-bed-mulch-01.jpg" alt="Landscape bed with fresh mulch and flowers" loading="lazy">
+          <div class="gallery-caption">Mulch &amp; Flower Bed Install</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-mulch-02.jpg" target="_blank">
+          <img src="images/landscape-bed-mulch-02.jpg" alt="Landscape bed with fresh mulch and flowers" loading="lazy">
+          <div class="gallery-caption">Mulch &amp; Flower Bed Install</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-mulch-03.jpg" target="_blank">
+          <img src="images/landscape-bed-mulch-03.jpg" alt="Landscape bed with fresh mulch" loading="lazy">
+          <div class="gallery-caption">Landscape Clean Up</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-front-01.jpg" target="_blank">
+          <img src="images/landscape-bed-front-01.jpg" alt="Front yard landscape bed" loading="lazy">
+          <div class="gallery-caption">Front Yard Landscape Design</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-front-02.jpg" target="_blank">
+          <img src="images/landscape-bed-front-02.jpg" alt="Front yard landscape bed" loading="lazy">
+          <div class="gallery-caption">Front Yard Landscape Design</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-install-01.jpg" target="_blank">
+          <img src="images/landscape-bed-install-01.jpg" alt="New landscape bed installation" loading="lazy">
+          <div class="gallery-caption">New Bed Installation</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-edge-01.jpg" target="_blank">
+          <img src="images/landscape-bed-edge-01.jpg" alt="Clean landscape bed edging" loading="lazy">
+          <div class="gallery-caption">Clean Bed Edging</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-new-tree.jpg" target="_blank">
+          <img src="images/landscape-bed-new-tree.jpg" alt="New tree planting in landscape bed" loading="lazy">
+          <div class="gallery-caption">Tree &amp; Shrub Planting</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-new-build.jpg" target="_blank">
+          <img src="images/landscape-bed-new-build.jpg" alt="Landscape design for new build home" loading="lazy">
+          <div class="gallery-caption">New Build Landscaping</div>
+        </a>
+        <a class="gallery-item landscape" href="images/landscape-bed-with-sign.jpg" target="_blank">
+          <img src="images/landscape-bed-with-sign.jpg" alt="Completed landscape project" loading="lazy">
+          <div class="gallery-caption">Completed Landscape Project</div>
+        </a>
+        <a class="gallery-item landscape" href="images/irrigation-trench.jpg" target="_blank">
+          <img src="images/irrigation-trench.jpg" alt="Irrigation line installation" loading="lazy">
+          <div class="gallery-caption">Irrigation Installation</div>
+        </a>
+        <a class="gallery-item landscape" href="images/sod-prep-lot-01.jpg" target="_blank">
+          <img src="images/sod-prep-lot-01.jpg" alt="Lot prepared for sod installation" loading="lazy">
+          <div class="gallery-caption">Sod Prep &amp; Install</div>
+        </a>
+        <a class="gallery-item landscape" href="images/sod-prep-lot-02.jpg" target="_blank">
+          <img src="images/sod-prep-lot-02.jpg" alt="Lot prepared for sod installation" loading="lazy">
+          <div class="gallery-caption">Sod Prep &amp; Install</div>
+        </a>
+        <a class="gallery-item landscape" href="images/sod-prep-lot-03.jpg" target="_blank">
+          <img src="images/sod-prep-lot-03.jpg" alt="Lot prepared for sod installation" loading="lazy">
+          <div class="gallery-caption">Sod Prep &amp; Install</div>
+        </a>
+
+        <!-- Dirt Work & Washing -->
+        <a class="gallery-item hardscape" href="images/excavator-dirt-work.jpg" target="_blank">
+          <img src="images/excavator-dirt-work.jpg" alt="Excavator performing dirt work" loading="lazy">
+          <div class="gallery-caption">Excavation &amp; Dirt Work</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/land-clearing-skidsteer.jpg" target="_blank">
+          <img src="images/land-clearing-skidsteer.jpg" alt="Skid steer clearing land" loading="lazy">
+          <div class="gallery-caption">Land Clearing</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/land-clearing-lot.jpg" target="_blank">
+          <img src="images/land-clearing-lot.jpg" alt="Cleared lot ready for development" loading="lazy">
+          <div class="gallery-caption">Land Clearing</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/land-clearing-mulcher.jpg" target="_blank">
+          <img src="images/land-clearing-mulcher.jpg" alt="Forestry mulcher clearing brush" loading="lazy">
+          <div class="gallery-caption">Brush Mulching</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/dirt-work-grading.jpg" target="_blank">
+          <img src="images/dirt-work-grading.jpg" alt="Grading equipment leveling a lot" loading="lazy">
+          <div class="gallery-caption">Grading &amp; Leveling</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/dirt-work-lot-clear.jpg" target="_blank">
+          <img src="images/dirt-work-lot-clear.jpg" alt="Cleared and graded lot" loading="lazy">
+          <div class="gallery-caption">Lot Preparation</div>
+        </a>
+        <a class="gallery-item hardscape" href="images/pressure-washed-driveway.jpg" target="_blank">
+          <img src="images/pressure-washed-driveway.jpg" alt="Pressure washed driveway" loading="lazy">
+          <div class="gallery-caption">Driveway Pressure Wash</div>
+        </a>
       </div>
     </div>
-    <p class="form-note">Placeholder quotes. Swap in real reviews from the client (Google, Facebook, or direct) before launch.</p>
-  </div>
-</section>
+  </section>
 
-<section class="cta-band">
-  <div class="container">
-    <div>
-      <h2>Let's take a look at your property.</h2>
-      <p>Quotes are free and usually turned around within a day.</p>
-    </div>
-    <a class="btn btn-primary" href="request-a-quote.html">Get a Free Quote</a>
-  </div>
-</section>
+  <!-- COMPREHENSIVE QUOTE FORM & WHY CHOOSE US -->
+  <section class="quote-section" id="quote">
+    <div class="container">
+      <div class="quote-grid">
 
-<section class="section-white">
-  <div class="container">
-    <div class="section-head">
-      <p class="kicker">Our Work</p>
-      <h2>A look at recent jobs.</h2>
-    </div>
-    <div class="gallery-strip">
-      <div class="photo-placeholder">PHOTO 1</div>
-      <div class="photo-placeholder light">PHOTO 2</div>
-      <div class="photo-placeholder">PHOTO 3</div>
-      <div class="photo-placeholder light">PHOTO 4</div>
-      <div class="photo-placeholder">PHOTO 5</div>
-      <div class="photo-placeholder light">PHOTO 6</div>
-    </div>
-    <p class="mt-0" style="margin-top:1.5rem;"><a class="btn btn-outline" href="gallery.html">View Full Gallery</a></p>
-  </div>
-</section>
+        <!-- Left: Recreated Form -->
+        <div class="form-box">
+          <h2 style="margin-bottom: 24px;">Project Request Form</h2>
+          <form id="quote-form">
+            <!-- Contact Details -->
+            <div class="form-label">Contact details</div>
+            <div class="form-row">
+              <input type="text" class="form-control" name="firstName" placeholder="First name" required>
+              <input type="text" class="form-control" name="lastName" placeholder="Last name" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="company" placeholder="Company name">
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" name="email" placeholder="Email" required>
+            </div>
+            <label class="checkbox-group">
+              <input type="checkbox" name="marketingEmail">
+              <span>I'd like to receive marketing emails from Ascension Mow N Geaux llc. Unsubscribe at any time.</span>
+            </label>
+            <div class="form-group" style="margin-top: 16px;">
+              <input type="tel" class="form-control" name="phone" placeholder="Phone (___) ___-____" required>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+                By providing your phone number, you agree to receive Visit Reminders and other transactional text messages (SMS). Message and data rates may apply. Reply STOP to cancel.
+              </p>
+            </div>
+            <label class="checkbox-group">
+              <input type="checkbox" name="marketingSms">
+              <span>I also agree to receive marketing SMS from Ascension Mow N Geaux llc. Reply STOP MKT to opt out.</span>
+            </label>
 
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <div class="footer-logo">
-        <span class="mark" style="background:var(--gold);color:var(--pine-deep);">AMG</span>
-        Ascension Mow N' Geaux
+            <!-- Address -->
+            <div class="form-divider"></div>
+            <div class="form-label">Address</div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="street" placeholder="Street address" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="unit" placeholder="Unit, apartment, suite, etc. (optional)">
+            </div>
+            <div class="form-row-3">
+              <input type="text" class="form-control" name="city" placeholder="City" required>
+              <select class="form-control" name="state" required style="background: rgba(0,0,0,0.5);">
+                <option value="">State</option>
+                <option value="LA">LA</option>
+              </select>
+              <input type="text" class="form-control" name="zip" placeholder="ZIP Code" required>
+            </div>
+
+            <!-- Services Checkboxes -->
+            <div class="form-divider"></div>
+            <div class="form-label">SELECT PROJECT TYPE / SERVICE NEEDED:<br><span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">SELECT ALL THAT APPLY: <span style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Required</span></span></div>
+
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Lawn Maintenance"> LAWN MAINTENANCE: Cut - String Trim - Edge - Blow ($50 Minimum)</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Landscape Clean Up"> LANDSCAPE CLEAN UP: Hedge Pruning - Weed Removal - Mulch Install</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Landscape Design Build"> LANDSCAPE DESIGN BUILD: Design - Demo - Install - Maintain</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Herbicide Application"> HERBICIDE APPLICATION: Non-Selective - Selective ($80 Minimum)</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Dump Trailer Services"> DUMP TRAILER SERVICES: Material Delivery - Debris Haul-off</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Sod Installation"> SOD INSTALLATION: Prep - Delivery - Installation</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Dirt Work"> DIRT WORK: Grading - Leveling - Excavation</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Pressure Washing"> PRESSURE WASHING: Driveways - Patios - Walkways - Fences</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Irrigation"> IRRIGATION: Start-up - Shutdown - Install - Repair - Replace</label>
+            <label class="checkbox-group"><input type="checkbox" name="service" value="Other"> OTHER: INSERT NOTES IN SECTION BELOW</label>
+
+            <!-- Notes & Referrals -->
+            <div class="form-divider"></div>
+            <div class="form-label">NOTES ABOUT YOUR PROJECT:</div>
+            <textarea class="form-control" name="notes" rows="4" placeholder="Enter details here..."></textarea>
+
+            <div class="form-label" style="margin-top: 16px;">HOW DID YOU HEAR ABOUT US?</div>
+            <select class="form-control" name="referral" style="background: rgba(0,0,0,0.5);">
+              <option value="">Choose an option</option>
+              <option value="google">Google</option>
+              <option value="facebook">Facebook</option>
+              <option value="referral">Friend/Referral</option>
+              <option value="truck">Saw your truck</option>
+            </select>
+
+            <!-- File Upload -->
+            <div class="form-divider"></div>
+            <div class="form-label">*PLEASE INCLUDE PICTURES*<br><span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Please include images of the work areas here.</span></div>
+            <label class="file-upload" for="photo-upload">
+              📷 Click to upload or drag and drop files here
+            </label>
+            <input type="file" id="photo-upload" name="photos" accept="image/*" multiple style="display:none;">
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 32px;">Submit Request</button>
+            <p id="form-note" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; text-align: center;"></p>
+          </form>
+        </div>
+
+        <!-- Right: Why Choose Us (Matches screenshot layout) -->
+        <div class="why-choose-us" style="padding-top: 20px;">
+          <h2 style="font-size: 2.5rem; color: #fff; margin-bottom: 40px;">Why Choose Us?</h2>
+
+          <h3>Proven Expertise & Comprehensive Services</h3>
+          <p>Since 2015, Ascension Mow N' Geaux's passion for crafting stunning outdoor spaces has driven us to offer a full range of services—from meticulous lawn care and mowing to innovative landscape design and maintenance. Our extensive experience ensures every property we touch is enhanced in beauty and value.</p>
+
+          <h3>Personalized, Relationship-Driven Approach</h3>
+          <p>We believe in building lasting relationships with our clients. By working closely with you and understanding your unique needs, we deliver exceptional results that not only meet but exceed expectations, ensuring your outdoor space truly reflects your vision.</p>
+
+          <h3>Convenient Solutions</h3>
+          <p>Stay cool while we handle your lawn care. Ascension Mow N Geux in Baton Rouge, LA offers hassle-free mowing, trimming, and maintenance so you enjoy a yard without the heat.</p>
+        </div>
+
       </div>
-      <p style="font-size:0.9rem; max-width:32ch;">Family-run lawn care and landscaping, serving Ascension and Livingston Parishes since 2015.</p>
     </div>
-    <div>
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="our-story.html">Our Story</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="request-a-quote.html">Get a Quote</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Get in Touch</h4>
-      <ul>
-        <li><a href="mailto:amngllc@gmail.com">amngllc@gmail.com</a></li>
-        <li><a href="tel:12253331991">(225) 333-1991</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Service Area</h4>
-      <ul>
-        <li>Prairieville</li>
-        <li>Gonzales</li>
-        <li>Baton Rouge</li>
-        <li>Livingston</li>
-      </ul>
-    </div>
-  </div>
-  <div class="container footer-bottom">
-    <span>&copy; 2026 Ascension Mow N' Geaux. All rights reserved.</span>
-    <span>Site by Sidequest Creative</span>
-  </div>
-</footer>
+  </section>
 
-<script src="js/main.js"></script>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">
+        <img src="images/logo.png" alt="Ascension Mow N' Geaux logo">
+        <span>ASCENSION MOW N' GEAUX</span>
+      </div>
+      <div class="footer-links">
+        <a href="tel:2253331991">📞 (225) 333-1991</a>
+        <a href="https://www.facebook.com/AscensionMowNGeaux/" target="_blank" rel="noopener">Facebook</a>
+        <a href="#quote">Get A Quote</a>
+      </div>
+      <p>&copy; <span id="year"></span> Ascension Mow N' Geaux LLC. Serving Prairieville, Gonzales &amp; Ascension Parish, LA.</p>
+    </div>
+  </footer>
+
+  <!-- Javascript -->
+  <script>
+    function filterGallery(category, evt) {
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      if (evt && evt.target) evt.target.classList.add('active');
+
+      const items = document.querySelectorAll('.gallery-item');
+      items.forEach(item => {
+        if (category === 'all' || item.classList.contains(category)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Quote form: builds a summary and opens the visitor's email client.
+    // Swap this for a form backend (Formspree, Netlify Forms, etc.) when ready to go live.
+    const form = document.getElementById('quote-form');
+    const fileInput = document.getElementById('photo-upload');
+    const fileLabel = document.querySelector('.file-upload');
+    fileInput.addEventListener('change', () => {
+      const n = fileInput.files.length;
+      fileLabel.textContent = n ? `📷 ${n} file(s) selected` : '📷 Click to upload or drag and drop files here';
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      const services = data.getAll('service').join(', ') || 'Not specified';
+      const lines = [
+        `Name: ${data.get('firstName')} ${data.get('lastName')}`,
+        `Company: ${data.get('company') || '-'}`,
+        `Email: ${data.get('email')}`,
+        `Phone: ${data.get('phone')}`,
+        `Address: ${data.get('street')} ${data.get('unit') || ''}, ${data.get('city')}, ${data.get('state')} ${data.get('zip')}`,
+        `Services Needed: ${services}`,
+        `Notes: ${data.get('notes') || '-'}`,
+        `Heard about us via: ${data.get('referral') || '-'}`,
+        `Note: please attach the ${fileInput.files.length} photo(s) you selected on the website to this email.`
+      ];
+      const subject = encodeURIComponent('New Project Request - ' + data.get('firstName') + ' ' + data.get('lastName'));
+      const body = encodeURIComponent(lines.join('\n'));
+      window.location.href = `mailto:info@ascensionmowngeaux.com?subject=${subject}&body=${body}`;
+      document.getElementById('form-note').textContent = "Opening your email app to send this request — attach your photos there before hitting send.";
+    });
+  </script>
 </body>
 </html>
