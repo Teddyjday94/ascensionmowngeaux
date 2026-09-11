@@ -96,3 +96,20 @@ test('story and service pages use shared page shells without inline presentation
     assert.doesNotMatch(html, /coming-soon/i);
   }
 });
+
+test('gallery and quote page expose honest interactive behavior', () => {
+  const gallery = htmlFor('gallery.html');
+  const quote = htmlFor('request-a-quote.html');
+  assert.match(gallery, /role="dialog"/);
+  assert.match(gallery, /aria-modal="true"/);
+  assert.match(quote, /This opens your email app/);
+  assert.match(quote, /id="form-note"[^>]*aria-live="polite"/);
+  assert.doesNotMatch(gallery, /style="/);
+  assert.doesNotMatch(quote, /style="/);
+});
+
+test('obsolete duplicate production files are absent', () => {
+  for (const file of ['styles.css', 'main.js', 'lawn-care.html']) {
+    assert.equal(existsSync(resolve(root, file)), false, `${file} should be removed`);
+  }
+});

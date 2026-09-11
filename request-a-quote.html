@@ -56,12 +56,6 @@
 <section class="section-white">
   <div class="container split-block">
     <form class="quote-form" id="quote-form" action="#" method="POST">
-      <!--
-        Hand off note: wire this to a form backend before launch
-        (Formspree, Web3Forms, or a simple serverless function).
-        For now, submitting opens the visitor's email client with
-        the details pre-filled, addressed to amngllc@gmail.com.
-      -->
       <div class="form-row">
         <div class="field">
           <label for="name">Full name</label>
@@ -99,7 +93,7 @@
         <textarea id="message" name="message" placeholder="Lot size, current condition, what you're looking to have done..."></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Request My Quote</button>
-      <p class="form-note" id="form-note">We usually respond within one business day.</p>
+      <p class="form-note" id="form-note" aria-live="polite">This opens your email app with your request filled in.</p>
     </form>
 
     <div>
@@ -107,9 +101,9 @@
       <h2>Call us directly.</h2>
       <p>Whether you need a quote, have questions, or want to book a service, our team is ready to help.</p>
       <a class="btn btn-outline" href="tel:12253331991">(225) 333-1991</a>
-      <div style="margin-top:2.5rem;">
-        <p class="section-head kicker" style="margin-bottom:0.3rem;">Or Email</p>
-        <a href="mailto:amngllc@gmail.com" style="font-weight:600;">amngllc@gmail.com</a>
+      <div class="contact-stack">
+        <p class="section-head kicker compact-kicker">Or Email</p>
+        <a class="contact-email" href="mailto:amngllc@gmail.com">amngllc@gmail.com</a>
       </div>
     </div>
   </div>
@@ -122,10 +116,10 @@
       <h2>Where we work.</h2>
     </div>
     <div class="value-grid">
-      <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Prairieville</h3></div>
-      <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Gonzales</h3></div>
-      <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Baton Rouge</h3></div>
-      <div class="value-item"><h3 style="font-family:var(--font-body); font-weight:600; font-size:1.05rem;">Livingston</h3></div>
+      <div class="value-item"><h3 class="service-area-name">Prairieville</h3></div>
+      <div class="value-item"><h3 class="service-area-name">Gonzales</h3></div>
+      <div class="value-item"><h3 class="service-area-name">Baton Rouge</h3></div>
+      <div class="value-item"><h3 class="service-area-name">Livingston</h3></div>
     </div>
   </div>
 </section>
@@ -137,7 +131,7 @@
         <span class="mark"><img src="images/logo.png" alt="Ascension Mow N' Geaux logo"></span>
         Ascension Mow N' Geaux
       </div>
-      <p style="font-size:0.9rem; max-width:32ch;">Family-run lawn care and landscaping, serving Ascension and Livingston Parishes since 2015.</p>
+      <p class="footer-summary">Family-run lawn care and landscaping, serving Ascension and Livingston Parishes since 2015.</p>
     </div>
     <div>
       <h4>Quick Links</h4>
@@ -173,10 +167,13 @@
 
 <script src="js/main.js"></script>
 <script>
-  // Temporary client-side handoff until a real form backend is wired up.
   document.getElementById('quote-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var f = e.target;
+    if (!f.checkValidity()) {
+      f.reportValidity();
+      return;
+    }
     var lines = [
       'Name: ' + f.name.value,
       'Phone: ' + f.phone.value,
@@ -188,7 +185,7 @@
     var subject = encodeURIComponent('Quote Request - ' + f.name.value);
     var body = encodeURIComponent(lines.join('\n'));
     window.location.href = 'mailto:amngllc@gmail.com?subject=' + subject + '&body=' + body;
-    document.getElementById('form-note').textContent = 'Opening your email app to send this request...';
+    document.getElementById('form-note').textContent = 'Your request is ready in your email app.';
   });
 </script>
 </body>
