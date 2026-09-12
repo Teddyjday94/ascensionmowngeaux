@@ -390,7 +390,7 @@ textarea { font: inherit; }
 .hero-video {
   z-index: 0;
   object-position: center 46%;
-  opacity: 0.78;
+  opacity: 1;
 }
 
 .hero-scrim {
@@ -677,7 +677,7 @@ textarea { font: inherit; }
 .work-video {
   z-index: 0;
   object-position: center 58%;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .work-reel-scrim {

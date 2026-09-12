@@ -132,6 +132,12 @@ test('homepage uses accessible background video with a still-image fallback', ()
   assert.match(html, /src="media\/land-clearing\.mp4"/);
 });
 
+test('background videos stay opaque so their poster frames cannot ghost through', () => {
+  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
+  assert.match(css, /\.hero-video\s*\{[\s\S]*?opacity:\s*1;/);
+  assert.match(css, /\.work-video\s*\{[\s\S]*?opacity:\s*1;/);
+});
+
 test('homepage presents the supplied before-and-after project pairs', () => {
   const html = htmlFor('index.html');
   assert.equal((html.match(/class="transformation-card"/g) || []).length, 2);
