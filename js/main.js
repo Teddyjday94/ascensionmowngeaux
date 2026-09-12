@@ -70,6 +70,26 @@ document.addEventListener('DOMContentLoaded', function () {
     setServicesOpen(false);
   });
 
+  var jobberShell = document.querySelector('.jobber-embed-shell');
+
+  if (jobberShell) {
+    function labelJobberFrame() {
+      var jobberFrame = jobberShell.querySelector('iframe');
+      if (!jobberFrame) return false;
+      jobberFrame.title = "Request a quote from Ascension Mow N' Geaux";
+      jobberFrame.classList.add('jobber-quote-frame');
+      jobberFrame.style.visibility = 'visible';
+      return true;
+    }
+
+    if (!labelJobberFrame()) {
+      var jobberObserver = new MutationObserver(function () {
+        if (labelJobberFrame()) jobberObserver.disconnect();
+      });
+      jobberObserver.observe(jobberShell, { childList: true, subtree: true });
+    }
+  }
+
   var galleryItems = document.querySelectorAll('[data-lightbox-label]');
   var lightbox = document.querySelector('.lightbox');
   var lastGalleryTrigger = null;

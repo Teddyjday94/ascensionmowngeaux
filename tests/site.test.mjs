@@ -70,6 +70,7 @@ test('stylesheet contains the approved responsive visual system', () => {
   assert.match(css, /html\s*\{[\s\S]*?overflow-x:\s*clip;/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /max-width:\s*390px/);
+  assert.match(css, /max-width:\s*700px[\s\S]*?\.project-proof \.photo-placeholder[\s\S]*?min-height:\s*0/);
 });
 
 test('homepage follows the proof-first content flow', () => {
@@ -103,10 +104,49 @@ test('gallery and quote page expose honest interactive behavior', () => {
   const quote = htmlFor('request-a-quote.html');
   assert.match(gallery, /role="dialog"/);
   assert.match(gallery, /aria-modal="true"/);
-  assert.match(quote, /This opens your email app/);
-  assert.match(quote, /id="form-note"[^>]*aria-live="polite"/);
+  assert.match(quote, /class="jobber-embed-shell"/);
+  assert.match(quote, /id="3adc7df3-2357-4067-8301-88630fbea38f" class="jobber-inline-work-request"/);
+  assert.match(quote, /work_request_embed_snippet\.js/);
+  assert.match(quote, /clienthub_id="3adc7df3-2357-4067-8301-88630fbea38f"/);
+  assert.match(quote, /form_url="https:\/\/clienthub\.getjobber\.com\/client_hubs\/3adc7df3-2357-4067-8301-88630fbea38f\/public\/work_request\/embedded_work_request_form"/);
+  assert.match(quote, /Open the secure quote form in a new tab/);
+  assert.doesNotMatch(quote, /mailto:amngllc@gmail\.com\?subject=/);
   assert.doesNotMatch(gallery, /style="/);
   assert.doesNotMatch(quote, /style="/);
+});
+
+test('shared script gives the injected Jobber quote frame an accessible title', () => {
+  const script = readFileSync(resolve(root, 'js/main.js'), 'utf8');
+  assert.match(script, /MutationObserver/);
+  assert.match(script, /Request a quote from Ascension Mow N' Geaux/);
+  assert.match(script, /jobber-quote-frame/);
+  assert.match(script, /style\.visibility = 'visible'/);
+});
+
+test('homepage uses accessible background video with a still-image fallback', () => {
+  const html = htmlFor('index.html');
+  assert.match(html, /<video[^>]*class="hero-video"[^>]*autoplay[^>]*muted[^>]*loop[^>]*playsinline/);
+  assert.match(html, /poster="media\/hero-mowing-poster\.jpg"/);
+  assert.match(html, /src="media\/hero-mowing\.mp4"/);
+  assert.match(html, /class="work-video"[^>]*poster="media\/land-clearing-poster\.jpg"/);
+  assert.match(html, /src="media\/land-clearing\.mp4"/);
+});
+
+test('homepage presents the supplied before-and-after project pairs', () => {
+  const html = htmlFor('index.html');
+  assert.equal((html.match(/class="transformation-card"/g) || []).length, 2);
+  assert.equal((html.match(/class="transformation-label before"/g) || []).length, 2);
+  assert.equal((html.match(/class="transformation-label after"/g) || []).length, 2);
+  assert.match(html, /images\/media\/side-yard-before\.jpg/);
+  assert.match(html, /images\/media\/side-yard-after\.jpg/);
+  assert.match(html, /images\/media\/rock-bed-before\.jpg/);
+  assert.match(html, /images\/media\/rock-bed-after\.jpg/);
+});
+
+test('motion-sensitive visitors receive still media instead of background video', () => {
+  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
+  assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*?\.hero-video[\s\S]*?display:\s*none/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*?\.work-video[\s\S]*?display:\s*none/);
 });
 
 test('obsolete duplicate production files are absent', () => {

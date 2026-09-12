@@ -7,6 +7,7 @@
 <meta name="description" content="Request a free lawn care or landscaping quote from Ascension Mow N' Geaux, serving Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana.">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://d3ey4dbjkt2f6s.cloudfront.net/assets/external/work_request_embed.css" media="screen">
 </head>
 <body>
 
@@ -54,58 +55,35 @@
 </section>
 
 <section class="section-white">
-  <div class="container split-block">
-    <form class="quote-form" id="quote-form" action="#" method="POST">
-      <div class="form-row">
-        <div class="field">
-          <label for="name">Full name</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="field">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" required>
-        </div>
+  <div class="container quote-layout">
+    <div class="jobber-embed-shell">
+      <div class="quote-form-intro">
+        <p class="kicker">Free estimate</p>
+        <h2>Tell us what needs attention.</h2>
+        <p>Share the property address, the services you need, and any photos that will help us understand the job. Your request goes straight into our scheduling system.</p>
       </div>
-      <div class="field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      <div class="field">
-        <label for="address">Property address</label>
-        <input type="text" id="address" name="address" placeholder="Street, city">
-      </div>
-      <div class="field">
-        <label for="service">Service interested in</label>
-        <select id="service" name="service">
-          <option value="">Select a service</option>
-          <option>Lawn Care</option>
-          <option>Landscaping</option>
-          <option>Irrigation</option>
-          <option>Landscape Lighting</option>
-          <option>Bush Hogging</option>
-          <option>Fencing</option>
-          <option>Soft Washing &amp; Pressure Washing</option>
-          <option>Not sure yet</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="message">Tell us about your property</label>
-        <textarea id="message" name="message" placeholder="Lot size, current condition, what you're looking to have done..."></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Request My Quote</button>
-      <p class="form-note" id="form-note" aria-live="polite">This opens your email app with your request filled in.</p>
-    </form>
-
-    <div>
-      <p class="section-head kicker">Prefer to Talk?</p>
-      <h2>Call us directly.</h2>
-      <p>Whether you need a quote, have questions, or want to book a service, our team is ready to help.</p>
-      <a class="btn btn-outline" href="tel:12253331991">(225) 333-1991</a>
-      <div class="contact-stack">
-        <p class="section-head kicker compact-kicker">Or Email</p>
-        <a class="contact-email" href="mailto:amngllc@gmail.com">amngllc@gmail.com</a>
-      </div>
+      <div id="3adc7df3-2357-4067-8301-88630fbea38f" class="jobber-inline-work-request"></div>
+      <script src="https://d3ey4dbjkt2f6s.cloudfront.net/assets/static_link/work_request_embed_snippet.js"
+        clienthub_id="3adc7df3-2357-4067-8301-88630fbea38f"
+        form_url="https://clienthub.getjobber.com/client_hubs/3adc7df3-2357-4067-8301-88630fbea38f/public/work_request/embedded_work_request_form"></script>
+      <p class="jobber-fallback">If the form does not load, <a href="https://clienthub.getjobber.com/client_hubs/3adc7df3-2357-4067-8301-88630fbea38f/public/work_request/embedded_work_request_form" target="_blank" rel="noopener">Open the secure quote form in a new tab</a>.</p>
     </div>
+
+    <aside class="quote-contact-card">
+      <p class="kicker">Prefer to talk?</p>
+      <h2>Call the crew directly.</h2>
+      <p>We can talk through the property, the timing, and which service makes sense.</p>
+      <a class="btn btn-primary" href="tel:12253331991">Call (225) 333-1991</a>
+      <a class="quote-email" href="mailto:amngllc@gmail.com">amngllc@gmail.com</a>
+      <div class="quote-ready-list">
+        <h3>Helpful details to have ready</h3>
+        <ul>
+          <li>Property address</li>
+          <li>Service or problem area</li>
+          <li>Photos of the current condition</li>
+        </ul>
+      </div>
+    </aside>
   </div>
 </section>
 
@@ -166,27 +144,5 @@
 </footer>
 
 <script src="js/main.js"></script>
-<script>
-  document.getElementById('quote-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var f = e.target;
-    if (!f.checkValidity()) {
-      f.reportValidity();
-      return;
-    }
-    var lines = [
-      'Name: ' + f.name.value,
-      'Phone: ' + f.phone.value,
-      'Email: ' + f.email.value,
-      'Address: ' + (f.address.value || '-'),
-      'Service: ' + (f.service.value || 'Not specified'),
-      'Message: ' + (f.message.value || '-')
-    ];
-    var subject = encodeURIComponent('Quote Request - ' + f.name.value);
-    var body = encodeURIComponent(lines.join('\n'));
-    window.location.href = 'mailto:amngllc@gmail.com?subject=' + subject + '&body=' + body;
-    document.getElementById('form-note').textContent = 'Your request is ready in your email app.';
-  });
-</script>
 </body>
 </html>
