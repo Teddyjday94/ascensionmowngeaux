@@ -19,6 +19,17 @@ const pages = [
 
 const htmlFor = (page) => readFileSync(resolve(root, page), 'utf8');
 
+const interiorHeroImages = new Map([
+  ['our-story.html', 'images/media/crew-truck-trailer.jpg'],
+  ['gallery.html', 'images/media/rock-bed-after.jpg'],
+  ['request-a-quote.html', 'images/media/estate-lawn-wide.jpg'],
+  ['services/lawn-care.html', '../images/fresh-mow-lawn.jpg'],
+  ['services/landscaping.html', '../images/landscape-bed-front-01.jpg'],
+  ['services/irrigation.html', '../images/irrigation-trench.jpg'],
+  ['services/dirt-work-site-work.html', '../images/dirt-work-lot-clear.jpg'],
+  ['services/soft-washing-pressure-washing.html', '../images/pressure-washed-driveway.jpg'],
+]);
+
 test('all local page and asset references resolve', () => {
   for (const page of pages) {
     const html = htmlFor(page);
@@ -147,6 +158,30 @@ test('story and service pages use shared page shells without inline presentation
     assert.doesNotMatch(html, /style="/);
     assert.doesNotMatch(html, /coming-soon/i);
   }
+});
+
+test('every interior page hero pairs its copy with relevant project photography', () => {
+  for (const [page, image] of interiorHeroImages) {
+    const html = htmlFor(page);
+    const hero = html.match(/<section class="page-header">([\s\S]*?)<\/section>/)?.[1] || '';
+    assert.match(hero, /class="container page-header-grid"/, `${page}: hero needs the shared split layout`);
+    assert.match(hero, /class="page-header-copy"/, `${page}: hero copy needs its shared wrapper`);
+    assert.match(hero, /class="page-header-media"/, `${page}: hero needs a framed photo`);
+    assert.ok(hero.includes(`src="${image}"`), `${page}: hero needs ${image}`);
+    assert.match(hero, /<img[^>]+alt="[^"]+"/, `${page}: hero photo needs useful alt text`);
+
+    const firstContentImage = html.slice(html.indexOf('</section>', html.indexOf('<section class="page-header">')) + 10)
+      .match(/<img[^>]+src="([^"]+)"/)?.[1];
+    assert.notEqual(firstContentImage, image, `${page}: hero photo should not immediately repeat below`);
+  }
+});
+
+test('interior hero photos use the framed responsive layout', () => {
+  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
+  assert.match(css, /\.page-header-grid\s*\{[\s\S]*?grid-template-columns:/);
+  assert.match(css, /\.page-header-media\s*\{[\s\S]*?border:[\s\S]*?var\(--grass-500\)/);
+  assert.match(css, /\.page-header-media img\s*\{[\s\S]*?object-fit:\s*cover;/);
+  assert.match(css, /max-width:\s*700px[\s\S]*?\.page-header-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr;/);
 });
 
 test('gallery and quote page expose honest interactive behavior', () => {
