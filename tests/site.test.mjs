@@ -13,9 +13,7 @@ const pages = [
   'services/lawn-care.html',
   'services/landscaping.html',
   'services/irrigation.html',
-  'services/landscape-lighting.html',
-  'services/bush-hogging.html',
-  'services/fencing.html',
+  'services/dirt-work-site-work.html',
   'services/soft-washing-pressure-washing.html',
 ];
 
@@ -35,8 +33,11 @@ test('all local page and asset references resolve', () => {
 });
 
 test('the canonical page inventory stays complete', () => {
-  assert.equal(pages.length, 11);
+  assert.equal(pages.length, 9);
   for (const page of pages) assert.ok(existsSync(resolve(root, page)), page);
+  for (const removedPage of ['services/landscape-lighting.html', 'services/bush-hogging.html', 'services/fencing.html']) {
+    assert.equal(existsSync(resolve(root, removedPage)), false, `${removedPage} should be removed`);
+  }
 });
 
 test('every page uses the accessible shared navigation contract', () => {
@@ -46,6 +47,28 @@ test('every page uses the accessible shared navigation contract', () => {
     assert.match(html, /class="services-toggle"[^>]*aria-expanded="false"/);
     assert.match(html, /class="nav-backdrop"[^>]*hidden/);
     assert.match(html, /<nav[^>]*id="site-navigation"/);
+  }
+});
+
+test('every services menu matches the offerings in the Jobber request checklist', () => {
+  const expectedServices = [
+    'Lawn Maintenance',
+    'Landscape Cleanup',
+    'Landscape Design &amp; Build',
+    'Herbicide Application',
+    'Dump Trailer Services',
+    'Sod Installation',
+    'Dirt Work &amp; Site Work',
+    'Pressure Washing',
+    'Irrigation',
+  ];
+
+  for (const page of pages) {
+    const html = htmlFor(page);
+    const menu = html.match(/<ul class="dropdown"[^>]*>([\s\S]*?)<\/ul>/)?.[1] || '';
+    const labels = [...menu.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map((match) => match[1].trim());
+    assert.deepEqual(labels, expectedServices, `${page}: services menu is out of sync`);
+    assert.doesNotMatch(menu, /Landscape Lighting|Bush Hogging|Fencing/);
   }
 });
 
@@ -86,6 +109,33 @@ test('homepage follows the proof-first content flow', () => {
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual([...positions].sort((a, b) => a - b), positions);
   assert.doesNotMatch(html, /What people are saying|Placeholder quotes|Prairieville homeowner|Gonzales homeowner/);
+  assert.match(html, /Dirt Work &amp; Site Work/);
+  assert.match(html, /Pressure Washing/);
+  assert.doesNotMatch(html, /Landscape Lighting|Bush Hogging|Fencing/);
+});
+
+test('dirt and site work page uses supplied project photography for the advertised scope', () => {
+  const html = htmlFor('services/dirt-work-site-work.html');
+  assert.match(html, /Dirt Work &amp; Site Work/);
+  assert.match(html, /Grading/);
+  assert.match(html, /Leveling/);
+  assert.match(html, /Excavation/);
+  assert.match(html, /Material Delivery/);
+  assert.match(html, /Debris Haul-off/);
+  assert.match(html, /images\/sod-prep-lot-02\.jpg/);
+  assert.match(html, /images\/dirt-work-lot-clear\.jpg/);
+  assert.match(html, /images\/excavator-dirt-work\.jpg/);
+  assert.doesNotMatch(html, /images\/dirt-work-grading\.jpg/);
+  assert.doesNotMatch(html, /Bush Hogging|bush hogging/);
+});
+
+test('pressure washing page stays within the request checklist scope', () => {
+  const html = htmlFor('services/soft-washing-pressure-washing.html');
+  const visibleText = html.replace(/<[^>]+>/g, ' ');
+  for (const surface of ['Driveways', 'patios', 'walkways', 'fences']) {
+    assert.match(visibleText, new RegExp(surface, 'i'));
+  }
+  assert.doesNotMatch(visibleText, /Soft Washing|soft-wash|siding/i);
 });
 
 test('story and service pages use shared page shells without inline presentation', () => {
