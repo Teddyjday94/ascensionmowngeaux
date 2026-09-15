@@ -17,6 +17,6 @@ jobs:
         with:
           node-version: '22'
       - name: Run regression tests
-        run: node --test tests/site.test.mjs
+        run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: node --check js/main.js
