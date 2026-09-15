@@ -192,3 +192,16 @@ test('shared stylesheet retains the approved visual system and responsive video 
   assert.match(css, /\.hero-video\s*\{[\s\S]*?opacity:\s*1;/);
   assert.match(css, /\.work-video\s*\{[\s\S]*?opacity:\s*1;/);
 });
+
+test('all canonical pages load the shared animation stylesheet', () => {
+  for (const page of canonicalPages) {
+    const html = htmlFor(page);
+    assert.match(
+      html,
+      /<link rel="stylesheet" href="css\/animations\.css">/,
+      `${page}: missing animations.css`
+    );
+  }
+
+  assert.ok(existsSync(resolve(root, 'css/animations.css')), 'missing css/animations.css');
+});
