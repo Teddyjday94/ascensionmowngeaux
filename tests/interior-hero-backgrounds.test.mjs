@@ -12,7 +12,7 @@ test('interior heroes use unique full-bleed project photography', () => {
   assert.match(css, /\.page-header-media\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?inset:\s*0;/);
   assert.match(css, /\.page-header-media img\s*\{[\s\S]*?opacity:\s*0;/);
   assert.match(css, /landscape-install-in-progress\.jpg/);
-  assert.match(css, /estate-lawn-wide\.jpg/);
+  assert.match(css, /landscape-bed-front-02\.jpg/);
   assert.match(css, /maintained-bed-drive\.jpg/);
   assert.match(css, /crew-truck-trailer\.jpg/);
 });
@@ -20,7 +20,7 @@ test('interior heroes use unique full-bleed project photography', () => {
 test('selected hero backgrounds are not reused as visible content on the same page', () => {
   const pages = [
     ['our-story.html', 'images/media/landscape-install-in-progress.jpg'],
-    ['gallery.html', 'images/media/estate-lawn-wide.jpg'],
+    ['gallery.html', 'images/landscape-bed-front-02.jpg'],
     ['request-a-quote.html', 'images/media/maintained-bed-drive.jpg'],
   ];
 
