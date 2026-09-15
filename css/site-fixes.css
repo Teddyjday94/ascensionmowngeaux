@@ -1,4 +1,4 @@
-/* Shared navigation fixes loaded after the main stylesheet. */
+/* Shared navigation and interior hero fixes loaded after the main stylesheet. */
 
 body {
   overflow-x: clip;
@@ -16,5 +16,124 @@ body {
     right: 0;
     left: 0;
     height: 0.7rem;
+  }
+}
+
+/* Interior page heroes: turn the framed photo into a full-bleed background layer. */
+.page-header {
+  isolation: isolate;
+  min-height: clamp(390px, 48vw, 610px);
+  display: flex;
+  align-items: center;
+  background: var(--pine-950);
+}
+
+.page-header .container {
+  position: static;
+  z-index: auto;
+}
+
+.page-header-grid {
+  display: block;
+}
+
+.page-header-copy {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 760px);
+}
+
+.page-header-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: auto;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--pine-950);
+  background-position: center;
+  background-size: cover;
+  box-shadow: none;
+}
+
+.page-header-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 17, 10, 0.94) 0%, rgba(4, 17, 10, 0.84) 42%, rgba(4, 17, 10, 0.58) 72%, rgba(4, 17, 10, 0.66) 100%),
+    linear-gradient(0deg, rgba(4, 17, 10, 0.42), rgba(4, 17, 10, 0.08) 55%);
+  pointer-events: none;
+}
+
+.page-header-media img {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-header::after {
+  z-index: 1;
+  pointer-events: none;
+}
+
+body:has(.nav-list a[href="our-story.html"][aria-current="page"]) .page-header-media {
+  background-image: url('../images/media/landscape-install-in-progress.jpg');
+  background-position: center 48%;
+}
+
+body:has(.nav-list a[href="gallery.html"][aria-current="page"]) .page-header-media {
+  background-image: url('../images/media/estate-lawn-wide.jpg');
+  background-position: center 58%;
+}
+
+body:has(.header-cta[href="request-a-quote.html"][aria-current="page"]) .page-header-media {
+  background-image: url('../images/media/maintained-bed-drive.jpg');
+  background-position: center 54%;
+}
+
+/* Services uses its existing crew/project image as the full hero background. */
+body .services-hero {
+  isolation: isolate;
+  min-height: clamp(430px, 52vw, 650px);
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(90deg, rgba(4, 17, 10, 0.94) 0%, rgba(4, 17, 10, 0.80) 45%, rgba(4, 17, 10, 0.50) 75%, rgba(4, 17, 10, 0.62) 100%),
+    linear-gradient(0deg, rgba(4, 17, 10, 0.42), rgba(4, 17, 10, 0.08) 55%),
+    url('../images/media/crew-truck-trailer.jpg') center 58% / cover no-repeat;
+}
+
+body .services-hero-copy {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+}
+
+body .services-hero-photo {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .page-header,
+  body .services-hero {
+    min-height: 430px;
+  }
+
+  .page-header-media {
+    width: auto;
+    aspect-ratio: auto;
+  }
+
+  .page-header-media::after {
+    background:
+      linear-gradient(90deg, rgba(4, 17, 10, 0.92), rgba(4, 17, 10, 0.74)),
+      linear-gradient(0deg, rgba(4, 17, 10, 0.52), rgba(4, 17, 10, 0.16));
+  }
+
+  body .services-hero {
+    background-position: center 55%;
   }
 }
