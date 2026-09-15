@@ -85,7 +85,7 @@ body:has(.nav-list a[href="our-story.html"][aria-current="page"]) .page-header-m
 }
 
 body:has(.nav-list a[href="gallery.html"][aria-current="page"]) .page-header-media {
-  background-image: url('../images/media/estate-lawn-wide.jpg');
+  background-image: url('../images/landscape-bed-front-02.jpg');
   background-position: center 58%;
 }
 
