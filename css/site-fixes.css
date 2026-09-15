@@ -1,0 +1,20 @@
+/* Shared navigation fixes loaded after the main stylesheet. */
+
+body {
+  overflow-x: clip;
+}
+
+@media (min-width: 901px) {
+  .dropdown {
+    top: 100%;
+  }
+
+  .has-dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    height: 0.7rem;
+  }
+}

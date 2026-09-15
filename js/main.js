@@ -1,12 +1,96 @@
 // Ascension Mow N' Geaux - shared interaction behavior
 
+(function primeSharedSiteBehavior() {
+  var activeScript = document.currentScript;
+  var siteRoot = activeScript && activeScript.src
+    ? new URL('../', activeScript.src)
+    : new URL('./', window.location.href);
+
+  window.__amgSiteRoot = siteRoot;
+
+  // `overflow-x: hidden` on body creates a scrolling box in some browsers and
+  // breaks the sticky header. `clip` prevents horizontal spill without doing so.
+  if (document.body) document.body.style.overflowX = 'clip';
+
+  var existingFixes = document.querySelector('link[data-amg-site-fixes]');
+  if (!existingFixes) {
+    var fixes = document.createElement('link');
+    fixes.rel = 'stylesheet';
+    fixes.href = new URL('css/site-fixes.css', siteRoot).href;
+    fixes.setAttribute('data-amg-site-fixes', '');
+    document.head.appendChild(fixes);
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
+  var siteRoot = window.__amgSiteRoot || new URL('./', window.location.href);
   var toggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('.main-nav');
   var backdrop = document.querySelector('.nav-backdrop');
   var dropdownParent = document.querySelector('.has-dropdown');
   var servicesToggle = document.querySelector('.services-toggle');
   var desktopQuery = window.matchMedia('(min-width: 901px)');
+
+  var serviceTargets = {
+    'Lawn Maintenance': 'lawn-maintenance',
+    'Landscape Cleanup': 'landscape-cleanup',
+    'Landscape Design & Build': 'design-build',
+    'Herbicide Application': 'herbicide-application',
+    'Dump Trailer Services': 'dump-trailer-services',
+    'Sod Installation': 'sod-installation',
+    'Dirt Work & Site Work': 'dirt-work-site-work',
+    'Pressure Washing': 'pressure-washing',
+    'Irrigation': 'irrigation'
+  };
+
+  function serviceUrl(anchor) {
+    return new URL('services.html#' + anchor, siteRoot).href;
+  }
+
+  // Keep every shared dropdown in sync with the single consolidated services page.
+  document.querySelectorAll('.dropdown a').forEach(function (link) {
+    var label = link.textContent.trim();
+    var anchor = serviceTargets[label];
+    if (anchor) link.href = serviceUrl(anchor);
+  });
+
+  var servicesRootLink = document.querySelector('.services-control > a');
+  if (servicesRootLink) {
+    servicesRootLink.href = new URL('services.html', siteRoot).href;
+  }
+
+  // Normalize older in-page links elsewhere on the site so cards and calls-to-action
+  // land on the matching section even before legacy redirect pages are involved.
+  document.querySelectorAll('a[href]').forEach(function (link) {
+    var rawHref = link.getAttribute('href');
+    if (!rawHref || /^(?:#|mailto:|tel:|javascript:)/i.test(rawHref)) return;
+
+    var url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch (error) {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) return;
+
+    var path = url.pathname.replace(/\/+$/, '');
+    var hash = url.hash;
+
+    if (path.endsWith('/services/lawn-care.html')) {
+      link.href = serviceUrl(hash === '#herbicide-application' ? 'herbicide-application' : 'lawn-maintenance');
+    } else if (path.endsWith('/services/landscaping.html')) {
+      if (hash === '#design-build') link.href = serviceUrl('design-build');
+      else if (hash === '#sod-installation') link.href = serviceUrl('sod-installation');
+      else link.href = serviceUrl('landscape-cleanup');
+    } else if (path.endsWith('/services/irrigation.html')) {
+      link.href = serviceUrl('irrigation');
+    } else if (path.endsWith('/services/dirt-work-site-work.html')) {
+      link.href = serviceUrl(hash === '#dump-trailer-services' ? 'dump-trailer-services' : 'dirt-work-site-work');
+    } else if (path.endsWith('/services/soft-washing-pressure-washing.html')) {
+      link.href = serviceUrl('pressure-washing');
+    }
+  });
 
   function setServicesOpen(isOpen) {
     if (!dropdownParent || !servicesToggle) return;

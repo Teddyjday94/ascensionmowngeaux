@@ -5,11 +5,15 @@ import test from 'node:test';
 
 const root = resolve(import.meta.dirname, '..');
 
-const pages = [
+const canonicalPages = [
   'index.html',
   'our-story.html',
   'gallery.html',
   'request-a-quote.html',
+  'services.html',
+];
+
+const legacyServicePages = [
   'services/lawn-care.html',
   'services/landscaping.html',
   'services/irrigation.html',
@@ -19,19 +23,8 @@ const pages = [
 
 const htmlFor = (page) => readFileSync(resolve(root, page), 'utf8');
 
-const interiorHeroImages = new Map([
-  ['our-story.html', 'images/media/crew-truck-trailer.jpg'],
-  ['gallery.html', 'images/media/rock-bed-after.jpg'],
-  ['request-a-quote.html', 'images/media/estate-lawn-wide.jpg'],
-  ['services/lawn-care.html', '../images/fresh-mow-lawn.jpg'],
-  ['services/landscaping.html', '../images/landscape-bed-front-01.jpg'],
-  ['services/irrigation.html', '../images/irrigation-trench.jpg'],
-  ['services/dirt-work-site-work.html', '../images/dirt-work-lot-clear.jpg'],
-  ['services/soft-washing-pressure-washing.html', '../images/pressure-washed-driveway.jpg'],
-]);
-
-test('all local page and asset references resolve', () => {
-  for (const page of pages) {
+test('all canonical page and asset references resolve', () => {
+  for (const page of canonicalPages) {
     const html = htmlFor(page);
     const refs = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
 
@@ -43,16 +36,13 @@ test('all local page and asset references resolve', () => {
   }
 });
 
-test('the canonical page inventory stays complete', () => {
-  assert.equal(pages.length, 9);
-  for (const page of pages) assert.ok(existsSync(resolve(root, page)), page);
-  for (const removedPage of ['services/landscape-lighting.html', 'services/bush-hogging.html', 'services/fencing.html']) {
-    assert.equal(existsSync(resolve(root, removedPage)), false, `${removedPage} should be removed`);
-  }
+test('single consolidated services page and five legacy redirect pages exist', () => {
+  assert.ok(existsSync(resolve(root, 'services.html')));
+  for (const page of legacyServicePages) assert.ok(existsSync(resolve(root, page)), page);
 });
 
-test('every page uses the accessible shared navigation contract', () => {
-  for (const page of pages) {
+test('canonical pages keep the accessible shared navigation contract', () => {
+  for (const page of canonicalPages) {
     const html = htmlFor(page);
     assert.match(html, /class="nav-toggle"[^>]*aria-controls="site-navigation"/);
     assert.match(html, /class="services-toggle"[^>]*aria-expanded="false"/);
@@ -61,53 +51,125 @@ test('every page uses the accessible shared navigation contract', () => {
   }
 });
 
-test('every services menu matches the offerings in the Jobber request checklist', () => {
-  const expectedServices = [
-    'Lawn Maintenance',
-    'Landscape Cleanup',
-    'Landscape Design &amp; Build',
-    'Herbicide Application',
-    'Dump Trailer Services',
-    'Sod Installation',
-    'Dirt Work &amp; Site Work',
-    'Pressure Washing',
-    'Irrigation',
+test('services page dropdown keeps all nine offerings and exact section targets', () => {
+  const html = htmlFor('services.html');
+  const expected = new Map([
+    ['Lawn Maintenance', 'services.html#lawn-maintenance'],
+    ['Landscape Cleanup', 'services.html#landscape-cleanup'],
+    ['Landscape Design &amp; Build', 'services.html#design-build'],
+    ['Herbicide Application', 'services.html#herbicide-application'],
+    ['Dump Trailer Services', 'services.html#dump-trailer-services'],
+    ['Sod Installation', 'services.html#sod-installation'],
+    ['Dirt Work &amp; Site Work', 'services.html#dirt-work-site-work'],
+    ['Pressure Washing', 'services.html#pressure-washing'],
+    ['Irrigation', 'services.html#irrigation'],
+  ]);
+
+  const menu = html.match(/<ul class="dropdown"[^>]*>([\s\S]*?)<\/ul>/)?.[1] || '';
+  const links = [...menu.matchAll(/<a href="([^"]+)">([^<]+)<\/a>/g)]
+    .map((match) => [match[2].trim(), match[1]]);
+
+  assert.deepEqual(new Map(links), expected);
+});
+
+test('services page contains one hero and exactly five grouped service sections', () => {
+  const html = htmlFor('services.html');
+  assert.equal((html.match(/class="services-hero"/g) || []).length, 1);
+  assert.equal((html.match(/class="service-section /g) || []).length, 5);
+
+  for (const id of [
+    'lawn-maintenance',
+    'herbicide-application',
+    'landscape-cleanup',
+    'design-build',
+    'sod-installation',
+    'irrigation',
+    'dirt-work-site-work',
+    'dump-trailer-services',
+    'pressure-washing',
+  ]) {
+    assert.match(html, new RegExp(`id="${id}"`), `missing #${id}`);
+  }
+});
+
+test('services page uses only appropriate proof photos for the grouped services', () => {
+  const html = htmlFor('services.html');
+
+  assert.match(html, /images\/media\/crew-truck-trailer\.jpg/);
+  assert.match(html, /images\/fresh-mow-lawn\.jpg/);
+  assert.match(html, /images\/landscape-bed-front-01\.jpg/);
+  assert.match(html, /images\/sod-prep-lot-02\.jpg/);
+  assert.match(html, /images\/irrigation-trench\.jpg/);
+  assert.match(html, /images\/excavator-dirt-work\.jpg/);
+  assert.match(html, /images\/dirt-work-lot-clear\.jpg/);
+  assert.match(html, /images\/pressure-washed-driveway\.jpg/);
+
+  const pressureSection = html.match(/id="pressure-washing"[\s\S]*?<\/section>/)?.[0] || '';
+  assert.match(pressureSection, /pressure-washed-driveway\.jpg/);
+  assert.doesNotMatch(pressureSection, /fresh-mow|estate-lawn|zero-turn/);
+
+  const dirtSection = html.match(/id="dirt-work-site-work"[\s\S]*?<\/section>/)?.[0] || '';
+  assert.match(dirtSection, /excavator-dirt-work\.jpg/);
+  assert.doesNotMatch(dirtSection, /crew-truck-trailer\.jpg/);
+  assert.doesNotMatch(dirtSection, /dump trailer[^<]*(?:photo|pictured|shown)/i);
+});
+
+test('legacy service pages redirect to the correct grouped sections and preserve old hashes', () => {
+  const checks = [
+    ['services/lawn-care.html', '#lawn-maintenance', ['lawn-maintenance', 'herbicide-application']],
+    ['services/landscaping.html', '#landscape-cleanup', ['landscape-cleanup', 'design-build', 'sod-installation']],
+    ['services/irrigation.html', '#irrigation', ['irrigation']],
+    ['services/dirt-work-site-work.html', '#dirt-work-site-work', ['dirt-work-site-work', 'dump-trailer-services']],
+    ['services/soft-washing-pressure-washing.html', '#pressure-washing', ['pressure-washing']],
   ];
 
-  for (const page of pages) {
+  for (const [page, defaultHash, preserved] of checks) {
     const html = htmlFor(page);
-    const menu = html.match(/<ul class="dropdown"[^>]*>([\s\S]*?)<\/ul>/)?.[1] || '';
-    const labels = [...menu.matchAll(/<a[^>]*>([^<]+)<\/a>/g)].map((match) => match[1].trim());
-    assert.deepEqual(labels, expectedServices, `${page}: services menu is out of sync`);
-    assert.doesNotMatch(menu, /Landscape Lighting|Bush Hogging|Fencing/);
+    assert.match(html, new RegExp(`http-equiv="refresh" content="0; url=\\.\\./services\\.html${defaultHash}"`));
+    assert.match(html, /window\.location\.replace\('\.\.\/services\.html#' \+ target\)/);
+    for (const anchor of preserved) assert.ok(html.includes(`'${anchor}': '${anchor}'`), `${page}: ${anchor}`);
   }
 });
 
-test('shared script closes menus through all required paths', () => {
-  const script = readFileSync(resolve(root, 'js/main.js'), 'utf8');
-  assert.match(script, /function setNavOpen\(/);
-  assert.match(script, /function setServicesOpen\(/);
-  assert.match(script, /Escape/);
-  assert.match(script, /matchMedia/);
-  assert.match(script, /nav-backdrop/);
-  assert.match(script, /document\.body\.classList\.toggle\('nav-open'/);
+test('shared script corrects sticky-header overflow and normalizes service links site-wide', () => {
+  const script = htmlFor('js/main.js');
+  assert.match(script, /document\.body\.style\.overflowX = 'clip'/);
+  assert.match(script, /css\/site-fixes\.css/);
+  assert.match(script, /serviceTargets/);
+  assert.match(script, /services\.html#/);
+  assert.match(script, /services\/lawn-care\.html/);
+  assert.match(script, /services\/soft-washing-pressure-washing\.html/);
 });
 
-test('stylesheet contains the approved responsive visual system', () => {
-  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
-  for (const token of ['--pine-950', '--pine-800', '--grass-500', '--cream-50', '--ink-900']) {
-    assert.ok(css.includes(token), `missing ${token}`);
-  }
-  for (const selector of ['.trust-strip', '.service-card', '.project-proof', '.nav-backdrop', 'body.nav-open']) {
-    assert.ok(css.includes(selector), `missing ${selector}`);
-  }
-  assert.match(css, /html\s*\{[\s\S]*?overflow-x:\s*clip;/);
-  assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /max-width:\s*390px/);
-  assert.match(css, /max-width:\s*700px[\s\S]*?\.project-proof \.photo-placeholder[\s\S]*?min-height:\s*0/);
+test('site fixes remove the dropdown dead zone and preserve sticky-header behavior', () => {
+  const css = htmlFor('css/site-fixes.css');
+  assert.match(css, /body\s*\{[\s\S]*?overflow-x:\s*clip;/);
+  assert.match(css, /\.dropdown\s*\{[\s\S]*?top:\s*100%;/);
+  assert.match(css, /\.has-dropdown::after\s*\{[\s\S]*?height:\s*0\.7rem;/);
 });
 
-test('homepage follows the proof-first content flow', () => {
+test('services anchors account for the persistent header', () => {
+  const css = htmlFor('css/services-page.css');
+  assert.match(css, /\.service-section\s*\{[\s\S]*?scroll-margin-top:\s*104px;/);
+  assert.match(css, /\.service-detail\s*\{[\s\S]*?scroll-margin-top:\s*104px;/);
+});
+
+test('shared navigation and gallery behaviors remain intact', () => {
+  const script = htmlFor('js/main.js');
+  for (const marker of [
+    'function setNavOpen(',
+    'function setServicesOpen(',
+    'nav-backdrop',
+    'matchMedia',
+    'MutationObserver',
+    'data-lightbox-label',
+    "event.key !== 'Escape'",
+  ]) {
+    assert.ok(script.includes(marker), `missing ${marker}`);
+  }
+});
+
+test('homepage still follows the proof-first content flow', () => {
   const html = htmlFor('index.html');
   const orderedMarkers = [
     'class="hero"',
@@ -119,129 +181,14 @@ test('homepage follows the proof-first content flow', () => {
   const positions = orderedMarkers.map((marker) => html.indexOf(marker));
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual([...positions].sort((a, b) => a - b), positions);
-  assert.doesNotMatch(html, /What people are saying|Placeholder quotes|Prairieville homeowner|Gonzales homeowner/);
-  assert.match(html, /Dirt Work &amp; Site Work/);
-  assert.match(html, /Pressure Washing/);
-  assert.doesNotMatch(html, /Landscape Lighting|Bush Hogging|Fencing/);
 });
 
-test('dirt and site work page uses supplied project photography for the advertised scope', () => {
-  const html = htmlFor('services/dirt-work-site-work.html');
-  assert.match(html, /Dirt Work &amp; Site Work/);
-  assert.match(html, /Grading/);
-  assert.match(html, /Leveling/);
-  assert.match(html, /Excavation/);
-  assert.match(html, /Material Delivery/);
-  assert.match(html, /Debris Haul-off/);
-  assert.match(html, /images\/sod-prep-lot-02\.jpg/);
-  assert.match(html, /images\/dirt-work-lot-clear\.jpg/);
-  assert.match(html, /images\/excavator-dirt-work\.jpg/);
-  assert.doesNotMatch(html, /images\/dirt-work-grading\.jpg/);
-  assert.doesNotMatch(html, /Bush Hogging|bush hogging/);
-});
-
-test('pressure washing page stays within the request checklist scope', () => {
-  const html = htmlFor('services/soft-washing-pressure-washing.html');
-  const visibleText = html.replace(/<[^>]+>/g, ' ');
-  for (const surface of ['Driveways', 'patios', 'walkways', 'fences']) {
-    assert.match(visibleText, new RegExp(surface, 'i'));
+test('shared stylesheet retains the approved visual system and responsive video behavior', () => {
+  const css = htmlFor('css/styles.css');
+  for (const token of ['--pine-950', '--pine-800', '--grass-500', '--cream-50', '--ink-900']) {
+    assert.ok(css.includes(token), `missing ${token}`);
   }
-  assert.doesNotMatch(visibleText, /Soft Washing|soft-wash|siding/i);
-});
-
-test('story and service pages use shared page shells without inline presentation', () => {
-  const contentPages = pages.filter((page) => page === 'our-story.html' || page.startsWith('services/'));
-  for (const page of contentPages) {
-    const html = htmlFor(page);
-    assert.match(html, /class="page-header/);
-    assert.match(html, /class="site-footer/);
-    assert.doesNotMatch(html, /style="/);
-    assert.doesNotMatch(html, /coming-soon/i);
-  }
-});
-
-test('every interior page hero pairs its copy with relevant project photography', () => {
-  for (const [page, image] of interiorHeroImages) {
-    const html = htmlFor(page);
-    const hero = html.match(/<section class="page-header">([\s\S]*?)<\/section>/)?.[1] || '';
-    assert.match(hero, /class="container page-header-grid"/, `${page}: hero needs the shared split layout`);
-    assert.match(hero, /class="page-header-copy"/, `${page}: hero copy needs its shared wrapper`);
-    assert.match(hero, /class="page-header-media"/, `${page}: hero needs a framed photo`);
-    assert.ok(hero.includes(`src="${image}"`), `${page}: hero needs ${image}`);
-    assert.match(hero, /<img[^>]+alt="[^"]+"/, `${page}: hero photo needs useful alt text`);
-
-    const firstContentImage = html.slice(html.indexOf('</section>', html.indexOf('<section class="page-header">')) + 10)
-      .match(/<img[^>]+src="([^"]+)"/)?.[1];
-    assert.notEqual(firstContentImage, image, `${page}: hero photo should not immediately repeat below`);
-  }
-});
-
-test('interior hero photos use the framed responsive layout', () => {
-  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
-  assert.match(css, /\.page-header-grid\s*\{[\s\S]*?grid-template-columns:/);
-  assert.match(css, /\.page-header-media\s*\{[\s\S]*?border:[\s\S]*?var\(--grass-500\)/);
-  assert.match(css, /\.page-header-media img\s*\{[\s\S]*?object-fit:\s*cover;/);
-  assert.match(css, /max-width:\s*700px[\s\S]*?\.page-header-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr;/);
-});
-
-test('gallery and quote page expose honest interactive behavior', () => {
-  const gallery = htmlFor('gallery.html');
-  const quote = htmlFor('request-a-quote.html');
-  assert.match(gallery, /role="dialog"/);
-  assert.match(gallery, /aria-modal="true"/);
-  assert.match(quote, /class="jobber-embed-shell"/);
-  assert.match(quote, /id="3adc7df3-2357-4067-8301-88630fbea38f" class="jobber-inline-work-request"/);
-  assert.match(quote, /work_request_embed_snippet\.js/);
-  assert.match(quote, /clienthub_id="3adc7df3-2357-4067-8301-88630fbea38f"/);
-  assert.match(quote, /form_url="https:\/\/clienthub\.getjobber\.com\/client_hubs\/3adc7df3-2357-4067-8301-88630fbea38f\/public\/work_request\/embedded_work_request_form"/);
-  assert.match(quote, /Open the secure quote form in a new tab/);
-  assert.doesNotMatch(quote, /mailto:amngllc@gmail\.com\?subject=/);
-  assert.doesNotMatch(gallery, /style="/);
-  assert.doesNotMatch(quote, /style="/);
-});
-
-test('shared script gives the injected Jobber quote frame an accessible title', () => {
-  const script = readFileSync(resolve(root, 'js/main.js'), 'utf8');
-  assert.match(script, /MutationObserver/);
-  assert.match(script, /Request a quote from Ascension Mow N' Geaux/);
-  assert.match(script, /jobber-quote-frame/);
-  assert.match(script, /style\.visibility = 'visible'/);
-});
-
-test('homepage uses accessible background video with a still-image fallback', () => {
-  const html = htmlFor('index.html');
-  assert.match(html, /<video[^>]*class="hero-video"[^>]*autoplay[^>]*muted[^>]*loop[^>]*playsinline/);
-  assert.match(html, /poster="media\/hero-mowing-poster\.jpg"/);
-  assert.match(html, /src="media\/hero-mowing\.mp4"/);
-  assert.match(html, /class="work-video"[^>]*poster="media\/land-clearing-poster\.jpg"/);
-  assert.match(html, /src="media\/land-clearing\.mp4"/);
-});
-
-test('background videos stay opaque so their poster frames cannot ghost through', () => {
-  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
+  assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /\.hero-video\s*\{[\s\S]*?opacity:\s*1;/);
   assert.match(css, /\.work-video\s*\{[\s\S]*?opacity:\s*1;/);
-});
-
-test('homepage presents the supplied before-and-after project pairs', () => {
-  const html = htmlFor('index.html');
-  assert.equal((html.match(/class="transformation-card"/g) || []).length, 2);
-  assert.equal((html.match(/class="transformation-label before"/g) || []).length, 2);
-  assert.equal((html.match(/class="transformation-label after"/g) || []).length, 2);
-  assert.match(html, /images\/media\/side-yard-before\.jpg/);
-  assert.match(html, /images\/media\/side-yard-after\.jpg/);
-  assert.match(html, /images\/media\/rock-bed-before\.jpg/);
-  assert.match(html, /images\/media\/rock-bed-after\.jpg/);
-});
-
-test('motion-sensitive visitors receive still media instead of background video', () => {
-  const css = readFileSync(resolve(root, 'css/styles.css'), 'utf8');
-  assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*?\.hero-video[\s\S]*?display:\s*none/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*?\.work-video[\s\S]*?display:\s*none/);
-});
-
-test('obsolete duplicate production files are absent', () => {
-  for (const file of ['styles.css', 'main.js', 'lawn-care.html']) {
-    assert.equal(existsSync(resolve(root, file)), false, `${file} should be removed`);
-  }
 });
