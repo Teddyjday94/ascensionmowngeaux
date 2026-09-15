@@ -193,15 +193,14 @@ test('shared stylesheet retains the approved visual system and responsive video 
   assert.match(css, /\.work-video\s*\{[\s\S]*?opacity:\s*1;/);
 });
 
-test('all canonical pages load the shared animation stylesheet', () => {
-  for (const page of canonicalPages) {
-    const html = htmlFor(page);
-    assert.match(
-      html,
-      /<link rel="stylesheet" href="css\/animations\.css">/,
-      `${page}: missing animations.css`
-    );
-  }
+test('shared bootstrap loads the animation stylesheet site-wide', () => {
+  const script = htmlFor('js/main.js');
 
   assert.ok(existsSync(resolve(root, 'css/animations.css')), 'missing css/animations.css');
+  assert.match(script, /css\/animations\.css/);
+  assert.match(script, /data-amg-animations/);
+
+  for (const page of canonicalPages) {
+    assert.match(htmlFor(page), /<script src="js\/main\.js"><\/script>/, `${page}: missing shared script`);
+  }
 });
