@@ -116,6 +116,18 @@ body .services-hero-photo {
   display: none;
 }
 
+/* Homepage video backgrounds: never show the old poster artwork beneath
+   semi-transparent video frames. Use a flat dark base instead. */
+body .hero,
+body .work-reel {
+  background: var(--pine-950) !important;
+}
+
+body .hero-video,
+body .work-video {
+  opacity: 0.46 !important;
+}
+
 @media (max-width: 700px) {
   .page-header,
   body .services-hero {
