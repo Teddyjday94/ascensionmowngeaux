@@ -116,6 +116,33 @@ body .services-hero-photo {
   display: none;
 }
 
+/* Localized corner mask for the two homepage background videos.
+   This blends the lower-right cleanup area into the existing dark scrim
+   without dimming or blurring the rest of the footage. */
+.hero,
+.work-reel {
+  overflow: hidden;
+}
+
+.hero::after,
+.work-reel::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: clamp(300px, 34vw, 540px);
+  height: clamp(140px, 20vw, 250px);
+  background: radial-gradient(
+    ellipse at 100% 100%,
+    rgba(4, 17, 10, 0.98) 0%,
+    rgba(4, 17, 10, 0.90) 30%,
+    rgba(4, 17, 10, 0.58) 52%,
+    rgba(4, 17, 10, 0) 76%
+  );
+  pointer-events: none;
+}
+
 @media (max-width: 700px) {
   .page-header,
   body .services-hero {
@@ -135,5 +162,11 @@ body .services-hero-photo {
 
   body .services-hero {
     background-position: center 55%;
+  }
+
+  .hero::after,
+  .work-reel::after {
+    width: 55vw;
+    height: 30vw;
   }
 }
