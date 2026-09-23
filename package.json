@@ -1,0 +1,10 @@
+{
+  "name": "ascension-mow-n-geaux-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-seo.mjs",
+    "test": "node --test tests/*.test.mjs && npm run build && node scripts/verify-seo.mjs"
+  }
+}
