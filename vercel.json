@@ -4,16 +4,16 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/our-story/", "destination": "/our-story.html", "permanent": true },
-    { "source": "/services/", "destination": "/services.html", "permanent": true },
-    { "source": "/lawn-care/", "destination": "/services/lawn-care.html", "permanent": true },
-    { "source": "/landscaping/", "destination": "/services/landscaping.html", "permanent": true },
-    { "source": "/irrigation/", "destination": "/services/irrigation.html", "permanent": true },
-    { "source": "/soft-washing-pressure-washing/", "destination": "/services/soft-washing-pressure-washing.html", "permanent": true },
-    { "source": "/bush-hogging/", "destination": "/services/dirt-work-site-work.html", "permanent": true },
-    { "source": "/landscape-lighting/", "destination": "/services.html", "permanent": true },
-    { "source": "/fencing/", "destination": "/services.html", "permanent": true },
-    { "source": "/gallery/", "destination": "/gallery.html", "permanent": true },
-    { "source": "/request-a-quote/", "destination": "/request-a-quote.html", "permanent": true }
+    { "source": "/our-story", "destination": "/our-story.html", "permanent": true },
+    { "source": "/services", "destination": "/services.html", "permanent": true },
+    { "source": "/lawn-care", "destination": "/services/lawn-care.html", "permanent": true },
+    { "source": "/landscaping", "destination": "/services/landscaping.html", "permanent": true },
+    { "source": "/irrigation", "destination": "/services/irrigation.html", "permanent": true },
+    { "source": "/soft-washing-pressure-washing", "destination": "/services/soft-washing-pressure-washing.html", "permanent": true },
+    { "source": "/bush-hogging", "destination": "/services/dirt-work-site-work.html", "permanent": true },
+    { "source": "/landscape-lighting", "destination": "/services.html", "permanent": true },
+    { "source": "/fencing", "destination": "/services.html", "permanent": true },
+    { "source": "/gallery", "destination": "/gallery.html", "permanent": true },
+    { "source": "/request-a-quote", "destination": "/request-a-quote.html", "permanent": true }
   ]
 }
