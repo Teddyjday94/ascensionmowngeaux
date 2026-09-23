@@ -40,6 +40,7 @@ for (const path of [
   assert.match(html, /<meta name="robots" content="noindex,nofollow,noarchive">/, `${path}: staging robots`);
   assert.match(html, /<meta property="og:title"/, `${path}: Open Graph`);
   assert.match(html, /<script type="application\/ld\+json">/, `${path}: schema`);
+  assert.doesNotMatch(html, /Livingston/i, `${path}: Livingston must not be advertised`);
 }
 
 const lawn = read('services/lawn-care.html');
@@ -48,18 +49,35 @@ assert.match(lawn, /id="lawn-maintenance"/);
 assert.match(lawn, /id="herbicide-application"/);
 assert.match(lawn, /Prairieville/);
 assert.match(lawn, /Gonzales/);
+assert.match(lawn, /id="local-faq-heading"/);
+assert.match(lawn, /What is included in routine lawn maintenance\?/);
+assert.match(lawn, /weekly and biweekly lawn service/i);
 
 const landscaping = read('services/landscaping.html');
 assert.match(landscaping, /id="landscape-cleanup"/);
 assert.match(landscaping, /id="design-build"/);
 assert.match(landscaping, /id="sod-installation"/);
+assert.match(landscaping, /What landscaping work do you handle\?/);
+
+const irrigation = read('services/irrigation.html');
+assert.match(irrigation, /Do you repair existing irrigation systems\?/);
+assert.match(irrigation, /Prairieville, Gonzales, Baton Rouge/);
 
 const dirt = read('services/dirt-work-site-work.html');
 assert.match(dirt, /id="dirt-work-site-work"/);
 assert.match(dirt, /id="dump-trailer-services"/);
+assert.match(dirt, /What types of dirt work do you handle\?/);
+
+const pressure = read('services/soft-washing-pressure-washing.html');
+assert.match(pressure, /What surfaces do you pressure wash\?/);
 
 const index = read('index.html');
 assert.match(index, /local-service-area-heading/);
+assert.match(index, /local-seo-proof-heading/);
+assert.match(index, /Lawn care and landscaping that shows from the road\./);
+assert.match(index, /Ascension Chamber of Commerce/);
+assert.match(index, /Prairieville, LA 70769/);
+assert.match(index, /Gonzales, LA 70737/);
 assert.match(index, /href="services\/lawn-care\.html"/);
 assert.match(index, /href="services\/landscaping\.html"/);
 
