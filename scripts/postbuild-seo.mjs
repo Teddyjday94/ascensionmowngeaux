@@ -21,6 +21,15 @@ await patch('services/landscaping.html', (html) =>
 );
 
 const rootPages = ['index.html', 'our-story.html', 'services.html', 'gallery.html', 'request-a-quote.html'];
+const servicePages = [
+  'services/lawn-care.html',
+  'services/landscaping.html',
+  'services/irrigation.html',
+  'services/dirt-work-site-work.html',
+  'services/soft-washing-pressure-washing.html',
+];
+const allHtmlPages = [...rootPages, ...servicePages];
+
 const hrefReplacements = [
   ['services.html#lawn-maintenance', 'services/lawn-care.html#lawn-maintenance'],
   ['services.html#herbicide-application', 'services/lawn-care.html#herbicide-application'],
@@ -33,6 +42,40 @@ const hrefReplacements = [
   ['services.html#pressure-washing', 'services/soft-washing-pressure-washing.html'],
 ];
 
+function removeLivingstonServiceArea(html) {
+  let next = html;
+
+  // Remove Livingston entries from JSON-LD areaServed arrays before changing prose.
+  next = next.replaceAll(',{"@type":"City","name":"Livingston, Louisiana"}', '');
+  next = next.replaceAll('{"@type":"City","name":"Livingston, Louisiana"},', '');
+  next = next.replaceAll(',{"@type":"AdministrativeArea","name":"Livingston Parish, Louisiana"}', '');
+  next = next.replaceAll('{"@type":"AdministrativeArea","name":"Livingston Parish, Louisiana"},', '');
+
+  const replacements = [
+    ['Ascension &amp; Livingston Parishes', 'Ascension Parish'],
+    ['Ascension & Livingston Parishes', 'Ascension Parish'],
+    ['Ascension and Livingston Parishes', 'Ascension Parish'],
+    ['Ascension and Livingston Parish service area', 'Ascension Parish service area'],
+    ['Ascension + Livingston', 'Ascension Parish'],
+    ['Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana', 'Prairieville, Gonzales, and Baton Rouge, Louisiana'],
+    ['Prairieville, Gonzales, Baton Rouge, and Livingston', 'Prairieville, Gonzales, and Baton Rouge'],
+    ['Prairieville, Gonzales, Baton Rouge and Livingston', 'Prairieville, Gonzales and Baton Rouge'],
+    ['Prairieville, Gonzales, Baton Rouge, Livingston and nearby communities', 'Prairieville, Gonzales, Baton Rouge and nearby communities'],
+    ['including Prairieville, Gonzales, Baton Rouge and Livingston', 'including Prairieville, Gonzales and Baton Rouge'],
+    ['<li>Livingston</li>', ''],
+  ];
+
+  for (const [from, to] of replacements) next = next.replaceAll(from, to);
+
+  // Catch any remaining prose-only Livingston references without leaving the old market advertised.
+  next = next.replace(/,?\s+Livingston Parish(?:es)?/gi, '');
+  next = next.replace(/,?\s+Livingston, Louisiana/gi, '');
+  next = next.replace(/,?\s+Livingston(?=[.,<\s])/gi, '');
+  next = next.replace(/\s{2,}/g, ' ');
+
+  return next;
+}
+
 for (const file of rootPages) {
   const path = resolve(out, file);
   let html = await readFile(path, 'utf8');
@@ -43,4 +86,10 @@ for (const file of rootPages) {
   await writeFile(path, html);
 }
 
-console.log('SEO postbuild complete: service anchors and static internal links verified.');
+for (const file of allHtmlPages) {
+  const path = resolve(out, file);
+  const html = await readFile(path, 'utf8');
+  await writeFile(path, removeLivingstonServiceArea(html));
+}
+
+console.log('SEO postbuild complete: service anchors, static internal links, and Ascension Parish service area applied.');
