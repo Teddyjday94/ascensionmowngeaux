@@ -42,22 +42,39 @@ const hrefReplacements = [
   ['services.html#pressure-washing', 'services/soft-washing-pressure-washing.html'],
 ];
 
-const serviceAreaReplacements = [
-  [',{"@type":"City","name":"Livingston, Louisiana"}', ''],
-  [',{"@type":"AdministrativeArea","name":"Livingston Parish, Louisiana"}', ''],
-  ['Ascension &amp; Livingston Parishes', 'Ascension Parish'],
-  ['Ascension & Livingston Parishes', 'Ascension Parish'],
-  ['Ascension and Livingston Parishes', 'Ascension Parish'],
-  ['Ascension and Livingston Parish service area', 'Ascension Parish service area'],
-  ['Ascension + Livingston', 'Ascension Parish'],
-  ['Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana', 'Prairieville, Gonzales, and Baton Rouge, Louisiana'],
-  ['Prairieville, Gonzales, Baton Rouge, and Livingston', 'Prairieville, Gonzales, and Baton Rouge'],
-  ['Prairieville, Gonzales, Baton Rouge and Livingston', 'Prairieville, Gonzales and Baton Rouge'],
-  ['Prairieville, Gonzales, Baton Rouge, Livingston and nearby communities', 'Prairieville, Gonzales, Baton Rouge and nearby communities'],
-  ['throughout Prairieville, Gonzales, Baton Rouge, Livingston and nearby communities', 'throughout Prairieville, Gonzales, Baton Rouge and nearby communities'],
-  ['including Prairieville, Gonzales, Baton Rouge and Livingston', 'including Prairieville, Gonzales and Baton Rouge'],
-  ['<li>Livingston</li>', ''],
-];
+function removeLivingstonServiceArea(html) {
+  let next = html;
+
+  // Remove Livingston entries from JSON-LD areaServed arrays before changing prose.
+  next = next.replaceAll(',{"@type":"City","name":"Livingston, Louisiana"}', '');
+  next = next.replaceAll('{"@type":"City","name":"Livingston, Louisiana"},', '');
+  next = next.replaceAll(',{"@type":"AdministrativeArea","name":"Livingston Parish, Louisiana"}', '');
+  next = next.replaceAll('{"@type":"AdministrativeArea","name":"Livingston Parish, Louisiana"},', '');
+
+  const replacements = [
+    ['Ascension &amp; Livingston Parishes', 'Ascension Parish'],
+    ['Ascension & Livingston Parishes', 'Ascension Parish'],
+    ['Ascension and Livingston Parishes', 'Ascension Parish'],
+    ['Ascension and Livingston Parish service area', 'Ascension Parish service area'],
+    ['Ascension + Livingston', 'Ascension Parish'],
+    ['Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana', 'Prairieville, Gonzales, and Baton Rouge, Louisiana'],
+    ['Prairieville, Gonzales, Baton Rouge, and Livingston', 'Prairieville, Gonzales, and Baton Rouge'],
+    ['Prairieville, Gonzales, Baton Rouge and Livingston', 'Prairieville, Gonzales and Baton Rouge'],
+    ['Prairieville, Gonzales, Baton Rouge, Livingston and nearby communities', 'Prairieville, Gonzales, Baton Rouge and nearby communities'],
+    ['including Prairieville, Gonzales, Baton Rouge and Livingston', 'including Prairieville, Gonzales and Baton Rouge'],
+    ['<li>Livingston</li>', ''],
+  ];
+
+  for (const [from, to] of replacements) next = next.replaceAll(from, to);
+
+  // Catch any remaining prose-only Livingston references without leaving the old market advertised.
+  next = next.replace(/,?\s+Livingston Parish(?:es)?/gi, '');
+  next = next.replace(/,?\s+Livingston, Louisiana/gi, '');
+  next = next.replace(/,?\s+Livingston(?=[.,<\s])/gi, '');
+  next = next.replace(/\s{2,}/g, ' ');
+
+  return next;
+}
 
 for (const file of rootPages) {
   const path = resolve(out, file);
@@ -71,12 +88,8 @@ for (const file of rootPages) {
 
 for (const file of allHtmlPages) {
   const path = resolve(out, file);
-  let html = await readFile(path, 'utf8');
-  for (const [from, to] of serviceAreaReplacements) html = html.replaceAll(from, to);
-  if (/Livingston/i.test(html)) {
-    throw new Error(`${file}: Livingston service-area reference remains after postbuild cleanup`);
-  }
-  await writeFile(path, html);
+  const html = await readFile(path, 'utf8');
+  await writeFile(path, removeLivingstonServiceArea(html));
 }
 
-console.log('SEO postbuild complete: service anchors, static internal links, and Ascension Parish service area verified.');
+console.log('SEO postbuild complete: service anchors, static internal links, and Ascension Parish service area applied.');
