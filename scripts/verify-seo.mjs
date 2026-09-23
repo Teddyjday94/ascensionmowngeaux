@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
@@ -93,5 +93,5 @@ if (existsSync(resolve(out, 'js/main.js'))) {
 }
 
 report.push(`SUMMARY | ${failures} failure(s)`);
-writeFileSync(resolve(out, 'seo-verification.txt'), report.join('\n') + '\n');
 console.log(report.join('\n'));
+if (failures > 0) throw new Error(`SEO verification failed with ${failures} failure(s)`);
