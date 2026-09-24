@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .asset-staging/client-media.part-* | tr -d '\n\r ' | base64 --decode > /tmp/client-media.tar.gz
+          cat .asset-staging/client-media-lite.part-* | tr -d '\n\r ' | base64 --decode > /tmp/client-media.tar.gz
           tar -xzf /tmp/client-media.tar.gz -C .
           rm -rf .asset-staging
 
