@@ -1,0 +1,220 @@
+/* Ascension Mow N' Geaux homepage loading screen */
+.amng-loader {
+  --amng-pine-950: #07150d;
+  --amng-pine-900: #0b2115;
+  --amng-grass-500: #78b82a;
+  --amng-grass-400: #94cf3e;
+  --amng-cream: #fbfaf4;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--amng-pine-950);
+  color: var(--amng-cream);
+  isolation: isolate;
+  transition: opacity 700ms cubic-bezier(.22,.72,.2,1), visibility 700ms step-end;
+}
+
+.amng-loader__video,
+.amng-loader__scrim,
+.amng-loader__texture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.amng-loader__video {
+  z-index: -4;
+  overflow: hidden;
+  opacity: .74;
+  transform: scale(1.025);
+  transition: transform 950ms cubic-bezier(.16,1,.3,1), filter 950ms ease;
+}
+
+.amng-loader__video iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 177.78vh;
+  height: 56.25vw;
+  min-width: 100%;
+  min-height: 100%;
+  border: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.055);
+  filter: saturate(.9) contrast(1.05);
+}
+
+.amng-loader__scrim {
+  z-index: -3;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(11,33,21,.05) 0 18%, rgba(7,21,13,.46) 58%, rgba(7,21,13,.78) 100%),
+    linear-gradient(180deg, rgba(7,21,13,.28), rgba(7,21,13,.68));
+}
+
+.amng-loader__texture {
+  z-index: -2;
+  opacity: .13;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.amng-loader__content {
+  width: min(88vw, 520px);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  transform: translateY(-1vh);
+}
+
+.amng-loader__logo-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(170px, 28vw, 260px);
+  min-height: 150px;
+  margin-bottom: 1.2rem;
+  padding: 1rem;
+}
+
+.amng-loader__logo-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 8% -9%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(148,207,62,.22), transparent 67%);
+  filter: blur(18px);
+  animation: amng-glow 2.2s ease-in-out infinite alternate;
+}
+
+.amng-loader__logo {
+  width: 100%;
+  max-height: 190px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 32px rgba(0,0,0,.38));
+  animation: amng-arrive 800ms cubic-bezier(.16,1,.3,1) both;
+}
+
+.amng-loader__label {
+  margin: 0 0 .72rem;
+  color: rgba(251,250,244,.82);
+  font-family: Manrope, system-ui, sans-serif;
+  font-size: clamp(.72rem, 1.7vw, .82rem);
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.amng-loader__progress-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: .9rem;
+}
+
+.amng-loader__track {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  box-shadow: inset 0 1px 8px rgba(0,0,0,.25), 0 10px 28px rgba(0,0,0,.16);
+}
+
+.amng-loader__bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--amng-grass-500), var(--amng-grass-400));
+  box-shadow: 0 0 18px rgba(148,207,62,.58);
+  transform-origin: left center;
+  transition: width 160ms linear;
+}
+
+.amng-loader__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 -18px 0 auto;
+  width: 34px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent);
+  filter: blur(2px);
+}
+
+.amng-loader__percent {
+  min-width: 3.1ch;
+  color: var(--amng-cream);
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.amng-loader__status {
+  margin: .72rem 0 0;
+  color: rgba(251,250,244,.62);
+  font-family: Manrope, system-ui, sans-serif;
+  font-size: .76rem;
+  letter-spacing: .03em;
+}
+
+html.amng-loading,
+html.amng-loading body {
+  overflow: hidden !important;
+}
+
+.amng-loader.is-complete .amng-loader__content {
+  animation: amng-content-out 620ms cubic-bezier(.4,0,.2,1) 120ms both;
+}
+
+.amng-loader.is-complete .amng-loader__video {
+  transform: scale(1.08);
+  filter: brightness(1.08);
+}
+
+.amng-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes amng-arrive {
+  from { opacity: 0; transform: translateY(18px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes amng-glow {
+  from { opacity: .48; transform: scale(.92); }
+  to { opacity: .9; transform: scale(1.06); }
+}
+
+@keyframes amng-content-out {
+  to { opacity: 0; transform: translateY(-12px) scale(1.025); filter: blur(5px); }
+}
+
+@media (max-width: 600px) {
+  .amng-loader__content { width: min(90vw, 430px); padding-inline: 1rem; }
+  .amng-loader__logo-wrap { width: min(58vw, 220px); min-height: 132px; }
+  .amng-loader__track { height: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amng-loader__video { display: none; }
+  .amng-loader *,
+  .amng-loader *::before,
+  .amng-loader *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
