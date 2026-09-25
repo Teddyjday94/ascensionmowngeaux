@@ -19,11 +19,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode high-quality gallery images
+      - name: Import high-quality gallery images
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p images/client
+          mkdir -p images/client /tmp/hq-gallery
+          cat .asset-staging/hq-gallery.part-* | tr -d '\n\r ' | base64 --decode > /tmp/hq-gallery.tar
+          tar -xf /tmp/hq-gallery.tar -C /tmp/hq-gallery
           for name in \
             dirt-work-grading-wide-03 \
             dirt-work-side-access \
@@ -32,7 +34,9 @@ jobs:
             lawn-maintenance-front-yard-01 \
             lawn-maintenance-front-yard-02
           do
-            cat ".asset-staging/${name}.part-"* | tr -d '\n\r ' | base64 --decode > "images/client/${name}.webp"
+            cp "/tmp/hq-gallery/${name}.avif" "images/client/${name}.avif"
+            rm -f "images/client/${name}.webp"
+            sed -i "s|images/client/${name}.webp|images/client/${name}.avif|g" gallery.html
           done
           rm -rf .asset-staging
           rm -f .github/workflows/import-hq-gallery.yml
