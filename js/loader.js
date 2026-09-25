@@ -20,6 +20,43 @@
     // Session storage can be unavailable in strict privacy modes. The loader still works.
   }
 
+  // Use a native, same-origin MP4 instead of a third-party iframe. This keeps
+  // autoplay reliable on Safari/iPadOS and avoids embed/privacy blocking.
+  const videoWrap = loader.querySelector('.amng-loader__video');
+  if (videoWrap) {
+    const nativeVideo = document.createElement('video');
+    nativeVideo.className = 'amng-loader__media';
+    nativeVideo.autoplay = true;
+    nativeVideo.muted = true;
+    nativeVideo.defaultMuted = true;
+    nativeVideo.loop = true;
+    nativeVideo.playsInline = true;
+    nativeVideo.preload = 'auto';
+    nativeVideo.poster = 'media/hero-mowing-poster.jpg';
+    nativeVideo.setAttribute('autoplay', '');
+    nativeVideo.setAttribute('muted', '');
+    nativeVideo.setAttribute('loop', '');
+    nativeVideo.setAttribute('playsinline', '');
+    nativeVideo.setAttribute('aria-hidden', 'true');
+
+    const source = document.createElement('source');
+    source.src = 'media/hero-mowing.mp4';
+    source.type = 'video/mp4';
+    nativeVideo.appendChild(source);
+
+    nativeVideo.addEventListener('canplay', () => {
+      videoWrap.classList.add('has-video');
+    }, { once: true });
+
+    videoWrap.replaceChildren(nativeVideo);
+    const playAttempt = nativeVideo.play();
+    if (playAttempt && typeof playAttempt.catch === 'function') {
+      playAttempt.catch(() => {
+        // The poster remains visible if a browser refuses autoplay.
+      });
+    }
+  }
+
   let progress = 0;
   let finishing = false;
   let pageReady = document.readyState === 'complete';
