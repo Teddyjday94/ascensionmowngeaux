@@ -15,41 +15,20 @@ html.motion-ready {
   scroll-behavior: smooth;
 }
 
-/* Shared reveal language */
+/* Shared reveal language
+   IMPORTANT: content is never hidden as an animation prerequisite.
+   Motion may enhance media, but headings/copy stay rendered at all times. */
 .motion-reveal,
 .motion-left,
 .motion-right,
 .motion-mask,
 .motion-heading {
-  opacity: 0;
-  will-change: opacity, transform;
-  transition:
-    opacity var(--motion-base) var(--motion-ease),
-    transform var(--motion-base) var(--motion-ease),
-    clip-path var(--motion-slow) var(--motion-soft);
-  transition-delay: calc(var(--motion-index, 0) * 70ms);
-}
-
-.motion-reveal {
-  transform: translate3d(0, var(--motion-distance), 0);
-}
-
-.motion-left {
-  transform: translate3d(calc(var(--motion-distance) * -1), 0, 0);
-}
-
-.motion-right {
-  transform: translate3d(var(--motion-distance), 0, 0);
-}
-
-.motion-mask {
-  transform: translate3d(0, 16px, 0) scale(1.035);
-  clip-path: inset(9% 0 9% 0 round var(--radius-md));
-}
-
-.motion-heading {
-  transform: translate3d(0, 24px, 0);
-  clip-path: inset(100% 0 0 0);
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  clip-path: none !important;
+  will-change: auto;
+  transition: none !important;
 }
 
 .motion-reveal.is-visible,
@@ -57,14 +36,11 @@ html.motion-ready {
 .motion-right.is-visible,
 .motion-mask.is-visible,
 .motion-heading.is-visible {
-  opacity: 1;
-  transform: translate3d(0, var(--motion-parallax-y, 0px), 0) scale(1);
-  clip-path: inset(0 0 0 0 round var(--radius-md));
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  clip-path: none !important;
   will-change: auto;
-}
-
-.motion-heading.is-visible {
-  clip-path: inset(0 0 0 0);
 }
 
 /* Cinematic depth layers */
@@ -351,4 +327,90 @@ html.motion-ready {
   .motion-accent-sweep::before {
     display: none;
   }
+}
+
+
+/* Bulletproof downloaded-file fallback.
+   Core headings/copy render immediately when the project is opened from disk. */
+html[data-local-preview="true"] .motion-reveal,
+html[data-local-preview="true"] .motion-left,
+html[data-local-preview="true"] .motion-right,
+html[data-local-preview="true"] .motion-mask,
+html[data-local-preview="true"] .motion-heading {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  transition: none !important;
+}
+
+/* Critical-copy safety: headings are content first, animation second.
+   Keep H1/H2/H3 reveal targets visible even before IntersectionObserver fires. */
+.motion-heading {
+  opacity: 1 !important;
+  clip-path: none !important;
+}
+
+.motion-heading.is-visible {
+  opacity: 1 !important;
+  clip-path: none !important;
+}
+
+/* Permanent text visibility safeguard.
+   Copy is content, not an animation dependency: never allow it to fade,
+   clip, collapse, or become hidden after page load. */
+.motion-text-static,
+.motion-text-static *,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.hero-copy,
+.hero-copy > *,
+.page-header-copy,
+.page-header-copy > *,
+.services-hero-copy,
+.services-hero-copy > *,
+.section-head,
+.section-head > *,
+.service-copy,
+.service-copy > *,
+.work-reel-content,
+.work-reel-content > *,
+.cta-band .container > *,
+.services-cta .container > *,
+.split-block > div:not(.split-media),
+.project-proof > div:last-child {
+  opacity: 1 !important;
+  visibility: visible !important;
+  clip-path: none !important;
+}
+
+.motion-text-static,
+.motion-text-static *,
+h1.motion-reveal,
+h1.motion-left,
+h1.motion-right,
+h1.motion-mask,
+h1.motion-heading,
+h2.motion-reveal,
+h2.motion-left,
+h2.motion-right,
+h2.motion-mask,
+h2.motion-heading,
+h3.motion-reveal,
+h3.motion-left,
+h3.motion-right,
+h3.motion-mask,
+h3.motion-heading,
+p.motion-reveal,
+p.motion-left,
+p.motion-right,
+p.motion-mask,
+p.motion-heading {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+  will-change: auto !important;
 }
