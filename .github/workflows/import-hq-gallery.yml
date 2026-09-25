@@ -1,0 +1,48 @@
+name: Import high-quality gallery media
+
+on:
+  push:
+    branches: [media-refresh-finalize]
+    paths:
+      - '.asset-staging/HQ_READY'
+
+permissions:
+  contents: write
+
+jobs:
+  import-media:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decode high-quality gallery images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p images/client
+          for name in \
+            dirt-work-grading-wide-03 \
+            dirt-work-side-access \
+            landscape-bed-front-close \
+            landscape-poolside-tree-row-02 \
+            lawn-maintenance-front-yard-01 \
+            lawn-maintenance-front-yard-02
+          do
+            cat ".asset-staging/${name}.part-"* | tr -d '\n\r ' | base64 --decode > "images/client/${name}.webp"
+          done
+          rm -rf .asset-staging
+          rm -f .github/workflows/import-hq-gallery.yml
+
+      - name: Commit high-quality images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Replace gallery images with high-quality versions"
+          git push origin HEAD:media-refresh-finalize
