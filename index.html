@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="amng-loading">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ascension Mow N' Geaux | Lawn Care &amp; Landscaping in Prairieville, LA</title>
 <meta name="description" content="Lawn care, landscaping, irrigation, and outdoor maintenance for Prairieville, Gonzales, Baton Rouge, and Livingston, Louisiana. Family-run since 2015.">
 <link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://player.vimeo.com">
+<link rel="preconnect" href="https://i.vimeocdn.com">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/loader.css">
 <style>
   .hero-video,
   .work-video {
@@ -25,6 +28,27 @@
 </style>
 </head>
 <body>
+
+<div class="amng-loader" data-amng-loader role="status" aria-live="polite" aria-label="Loading Ascension Mow N' Geaux">
+  <div class="amng-loader__video" aria-hidden="true">
+    <iframe src="https://player.vimeo.com/video/709079984?background=1&amp;autoplay=1&amp;muted=1&amp;loop=1&amp;autopause=0&amp;controls=0&amp;dnt=1" title="Lawn care loading background" allow="autoplay; fullscreen; picture-in-picture" tabindex="-1" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+  <div class="amng-loader__scrim" aria-hidden="true"></div>
+  <div class="amng-loader__texture" aria-hidden="true"></div>
+  <div class="amng-loader__content">
+    <div class="amng-loader__logo-wrap">
+      <img class="amng-loader__logo" src="images/logo.png" alt="Ascension Mow N' Geaux">
+    </div>
+    <p class="amng-loader__label">Loading your lawn crew</p>
+    <div class="amng-loader__progress-row">
+      <div class="amng-loader__track" aria-hidden="true">
+        <span class="amng-loader__bar" data-loader-bar></span>
+      </div>
+      <span class="amng-loader__percent" data-loader-percent>0%</span>
+    </div>
+    <p class="amng-loader__status" data-loader-status>Getting everything ready...</p>
+  </div>
+</div>
 
 <header class="site-header">
   <div class="container header-inner">
@@ -300,6 +324,7 @@
   </div>
 </footer>
 
+<script src="js/loader.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
