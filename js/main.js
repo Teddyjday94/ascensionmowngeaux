@@ -25,7 +25,7 @@
   if (!existingAnimations) {
     var animations = document.createElement('link');
     animations.rel = 'stylesheet';
-    animations.href = new URL('css/animations.css', siteRoot).href;
+    animations.href = new URL('css/animations.css?v=text-visible-v2', siteRoot).href;
     animations.setAttribute('data-amg-animations', '');
     document.head.appendChild(animations);
   }
@@ -36,12 +36,34 @@ function setupMotionSystem() {
   var compactViewport = window.matchMedia('(max-width: 800px)');
   var revealTargets = [];
   var registeredTargets = new Set();
+  var localFilePreview = window.location.protocol === 'file:';
 
-  document.documentElement.classList.add('motion-ready');
+  // Local downloaded previews must never depend on a scroll observer to make
+  // core copy visible. The live HTTP/HTTPS site keeps the reveal animations.
+  if (localFilePreview) {
+    document.documentElement.setAttribute('data-local-preview', 'true');
+  } else {
+    document.documentElement.classList.add('motion-ready');
+  }
 
   function register(element, className, index) {
     if (!element) return;
+
+    // Text must never depend on reveal state. If an element is text itself or
+    // contains visible copy, leave it permanently rendered and only use the
+    // motion system for image/video/decorative elements.
+    var textSelector = 'h1, h2, h3, h4, h5, h6, p, li, a, button, label, figcaption';
+    var containsCopy = element.matches(textSelector) || !!element.querySelector(textSelector);
+
+    if (containsCopy) {
+      element.classList.remove('motion-reveal', 'motion-left', 'motion-right', 'motion-mask', 'motion-heading');
+      element.classList.add('motion-text-static', 'is-visible');
+      element.style.removeProperty('--motion-index');
+      return;
+    }
+
     if (className) element.classList.add(className);
+    if (localFilePreview) element.classList.add('is-visible');
     if (typeof index === 'number') {
       element.style.setProperty('--motion-index', String(index));
     }
@@ -212,7 +234,7 @@ function setupMotionSystem() {
 
   var observer = null;
 
-  if (reduceMotion.matches || !('IntersectionObserver' in window)) {
+  if (localFilePreview || reduceMotion.matches || !('IntersectionObserver' in window)) {
     revealTargets.forEach(function (element) {
       element.classList.add('is-visible');
     });
