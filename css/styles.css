@@ -1404,3 +1404,58 @@ textarea { font: inherit; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Recent project media: keep embedded gallery videos consistent with photo cards. */
+.photo-placeholder video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-grid .gallery-video-card {
+  cursor: default;
+  background: var(--pine-950);
+}
+
+.gallery-video-card video {
+  position: absolute;
+  inset: 0;
+}
+
+.gallery-video-card .gallery-caption {
+  inset: 0 0 auto;
+  padding: 0.85rem 1rem 2.4rem;
+  background: linear-gradient(rgba(7, 21, 13, 0.86), transparent);
+  pointer-events: none;
+}
+
+
+/* Critical copy invariant: headings and primary copy are permanent page content. */
+h1, h2, h3, h4, h5, h6,
+.hero-copy, .hero-copy > *,
+.page-header-copy, .page-header-copy > *,
+.services-hero-copy, .services-hero-copy > *,
+.section-head, .section-head > *,
+.service-copy, .service-copy > *,
+.work-reel-content, .work-reel-content > *,
+.transformation-head, .transformation-head > *,
+.cta-band .container > *,
+.services-cta .container > * {
+  opacity: 1 !important;
+  visibility: visible !important;
+  clip-path: none !important;
+  filter: none !important;
+}
+
+h1.motion-reveal, h1.motion-left, h1.motion-right, h1.motion-mask, h1.motion-heading,
+h2.motion-reveal, h2.motion-left, h2.motion-right, h2.motion-mask, h2.motion-heading,
+h3.motion-reveal, h3.motion-left, h3.motion-right, h3.motion-mask, h3.motion-heading,
+p.motion-reveal, p.motion-left, p.motion-right, p.motion-mask, p.motion-heading {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  clip-path: none !important;
+  transition: none !important;
+  animation: none !important;
+}
