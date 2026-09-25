@@ -5,7 +5,7 @@
     return;
   }
 
-  const SESSION_KEY = 'amng-loader-seen-v1';
+  const SESSION_KEY = 'amng-loader-seen-v2';
   const bar = loader.querySelector('[data-loader-bar]');
   const percent = loader.querySelector('[data-loader-percent]');
   const status = loader.querySelector('[data-loader-status]');
