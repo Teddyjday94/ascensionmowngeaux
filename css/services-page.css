@@ -336,3 +336,16 @@
     scroll-behavior: auto;
   }
 }
+
+/* Recent project media: video cards share the existing service-photo treatment. */
+.service-photo video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--pine-950);
+}
+
+.service-video-photo {
+  background: var(--pine-950);
+}
