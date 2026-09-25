@@ -13,7 +13,7 @@ const canonicalPages = [
   'services.html',
 ];
 
-const legacyServicePages = [
+const servicePages = [
   'services/lawn-care.html',
   'services/landscaping.html',
   'services/irrigation.html',
@@ -36,9 +36,16 @@ test('all canonical page and asset references resolve', () => {
   }
 });
 
-test('single consolidated services page and five legacy redirect pages exist', () => {
+test('consolidated services page and five full standalone service pages exist', () => {
   assert.ok(existsSync(resolve(root, 'services.html')));
-  for (const page of legacyServicePages) assert.ok(existsSync(resolve(root, page)), page);
+  for (const page of servicePages) {
+    assert.ok(existsSync(resolve(root, page)), page);
+    const html = htmlFor(page);
+    assert.match(html, /class="services-hero"/);
+    assert.match(html, /class="service-section /);
+    assert.match(html, /local-faq-section/);
+    assert.doesNotMatch(html, /http-equiv="refresh"/);
+  }
 });
 
 test('canonical pages keep the accessible shared navigation contract', () => {
@@ -97,11 +104,11 @@ test('services page uses only appropriate proof photos for the grouped services'
 
   assert.match(html, /images\/media\/crew-truck-trailer\.jpg/);
   assert.match(html, /images\/fresh-mow-lawn\.jpg/);
-  assert.match(html, /images\/landscape-bed-front-01\.jpg/);
-  assert.match(html, /images\/sod-prep-lot-02\.jpg/);
+  assert.match(html, /media\/recent\/landscape-bed-walkthrough\.mp4/);
+  assert.match(html, /images\/media\/recent\/landscape-front-bed-02\.jpg/);
   assert.match(html, /images\/irrigation-trench\.jpg/);
-  assert.match(html, /images\/excavator-dirt-work\.jpg/);
-  assert.match(html, /images\/dirt-work-lot-clear\.jpg/);
+  assert.match(html, /media\/recent\/site-prep-equipment\.mp4/);
+  assert.match(html, /images\/media\/recent\/land-clearing-excavator\.jpg/);
   assert.match(html, /images\/pressure-washed-driveway\.jpg/);
 
   const pressureSection = html.match(/id="pressure-washing"[\s\S]*?<\/section>/)?.[0] || '';
@@ -109,25 +116,28 @@ test('services page uses only appropriate proof photos for the grouped services'
   assert.doesNotMatch(pressureSection, /fresh-mow|estate-lawn|zero-turn/);
 
   const dirtSection = html.match(/id="dirt-work-site-work"[\s\S]*?<\/section>/)?.[0] || '';
-  assert.match(dirtSection, /excavator-dirt-work\.jpg/);
+  assert.match(dirtSection, /site-prep-equipment\.mp4/);
+  assert.match(dirtSection, /land-clearing-excavator\.jpg/);
   assert.doesNotMatch(dirtSection, /crew-truck-trailer\.jpg/);
   assert.doesNotMatch(dirtSection, /dump trailer[^<]*(?:photo|pictured|shown)/i);
 });
 
-test('legacy service pages redirect to the correct grouped sections and preserve old hashes', () => {
+test('standalone service pages retain their full hero and local-service copy', () => {
   const checks = [
-    ['services/lawn-care.html', '#lawn-maintenance', ['lawn-maintenance', 'herbicide-application']],
-    ['services/landscaping.html', '#landscape-cleanup', ['landscape-cleanup', 'design-build', 'sod-installation']],
-    ['services/irrigation.html', '#irrigation', ['irrigation']],
-    ['services/dirt-work-site-work.html', '#dirt-work-site-work', ['dirt-work-site-work', 'dump-trailer-services']],
-    ['services/soft-washing-pressure-washing.html', '#pressure-washing', ['pressure-washing']],
+    ['services/lawn-care.html', 'Lawn care that keeps the whole property looking finished.', 'Lawn Care'],
+    ['services/landscaping.html', 'Landscaping built around how the property actually works.', 'Landscaping'],
+    ['services/irrigation.html', 'Irrigation that puts water where the lawn and beds need it.', 'Irrigation'],
+    ['services/dirt-work-site-work.html', 'Dirt work that gets the ground ready for what comes next.', 'Dirt Work &amp; Site Work'],
+    ['services/soft-washing-pressure-washing.html', 'Pressure washing that cleans the surface without treating everything the same.', 'Pressure Washing'],
   ];
 
-  for (const [page, defaultHash, preserved] of checks) {
+  for (const [page, hero, serviceName] of checks) {
     const html = htmlFor(page);
-    assert.match(html, new RegExp(`http-equiv="refresh" content="0; url=\\.\\./services\\.html${defaultHash}"`));
-    assert.match(html, /window\.location\.replace\('\.\.\/services\.html#' \+ target\)/);
-    for (const anchor of preserved) assert.ok(html.includes(`'${anchor}': '${anchor}'`), `${page}: ${anchor}`);
+    assert.ok(html.includes(hero), `${page}: missing hero copy`);
+    assert.ok(html.includes('Local Service'), `${page}: missing local-service label`);
+    assert.ok(html.includes(serviceName), `${page}: missing service heading`);
+    assert.ok(html.includes('Related property services'), `${page}: missing related-service section`);
+    assert.ok(html.includes('Local questions'), `${page}: missing FAQ section`);
   }
 });
 
