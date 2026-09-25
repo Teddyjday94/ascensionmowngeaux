@@ -5,10 +5,11 @@
     return;
   }
 
-  const SESSION_KEY = 'amng-loader-seen-v2';
+  const SESSION_KEY = 'amng-loader-seen-v3';
   const bar = loader.querySelector('[data-loader-bar]');
   const percent = loader.querySelector('[data-loader-percent]');
   const status = loader.querySelector('[data-loader-status]');
+  const loaderVideo = loader.querySelector('[data-loader-video]');
 
   try {
     if (sessionStorage.getItem(SESSION_KEY) === '1') {
@@ -20,36 +21,13 @@
     // Session storage can be unavailable in strict privacy modes. The loader still works.
   }
 
-  // Use a native, same-origin MP4 instead of a third-party iframe. This keeps
-  // autoplay reliable on Safari/iPadOS and avoids embed/privacy blocking.
-  const videoWrap = loader.querySelector('.amng-loader__video');
-  if (videoWrap) {
-    const nativeVideo = document.createElement('video');
-    nativeVideo.className = 'amng-loader__media';
-    nativeVideo.autoplay = true;
-    nativeVideo.muted = true;
-    nativeVideo.defaultMuted = true;
-    nativeVideo.loop = true;
-    nativeVideo.playsInline = true;
-    nativeVideo.preload = 'auto';
-    nativeVideo.poster = 'media/hero-mowing-poster.jpg';
-    nativeVideo.setAttribute('autoplay', '');
-    nativeVideo.setAttribute('muted', '');
-    nativeVideo.setAttribute('loop', '');
-    nativeVideo.setAttribute('playsinline', '');
-    nativeVideo.setAttribute('aria-hidden', 'true');
+  // Reinforce muted inline playback before play() for Safari and iPadOS.
+  if (loaderVideo) {
+    loaderVideo.muted = true;
+    loaderVideo.defaultMuted = true;
+    loaderVideo.playsInline = true;
 
-    const source = document.createElement('source');
-    source.src = 'media/hero-mowing.mp4';
-    source.type = 'video/mp4';
-    nativeVideo.appendChild(source);
-
-    nativeVideo.addEventListener('canplay', () => {
-      videoWrap.classList.add('has-video');
-    }, { once: true });
-
-    videoWrap.replaceChildren(nativeVideo);
-    const playAttempt = nativeVideo.play();
+    const playAttempt = loaderVideo.play();
     if (playAttempt && typeof playAttempt.catch === 'function') {
       playAttempt.catch(() => {
         // The poster remains visible if a browser refuses autoplay.
