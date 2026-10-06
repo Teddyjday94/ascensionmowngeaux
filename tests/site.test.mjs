@@ -30,6 +30,8 @@ test('all canonical page and asset references resolve', () => {
 
     for (const ref of refs) {
       if (/^(?:https?:|mailto:|tel:|#)/.test(ref)) continue;
+      // Skip Vercel-provided dynamic scripts (served at runtime)
+      if (/^\/_vercel\//.test(ref)) continue;
       const target = ref.split(/[?#]/, 1)[0];
       assert.ok(existsSync(resolve(root, dirname(page), target)), `${page}: missing ${ref}`);
     }
