@@ -4,9 +4,9 @@ import { resolve, dirname, join } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const out = resolve(root, 'dist');
-const defaultSiteUrl = 'https://ascensionmowngeaux.vercel.app';
+const defaultSiteUrl = 'https://ascensionmowngeaux.com';
 const siteUrl = (process.env.SITE_URL || defaultSiteUrl).replace(/\/$/, '');
-const indexingEnabled = String(process.env.SEO_INDEX || 'false').toLowerCase() === 'true';
+const indexingEnabled = String(process.env.SEO_INDEX || 'true').toLowerCase() === 'true';
 const businessName = "Ascension Mow N' Geaux";
 const phone = '+1-225-333-1991';
 const email = 'amngllc@gmail.com';
@@ -285,6 +285,13 @@ function injectSeo(html, page, service = null) {
   const robots = indexingEnabled
     ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
     : 'noindex,nofollow,noarchive';
+
+  // Drop any SEO block already baked into the source file so it is never duplicated.
+  html = html
+    .replace(/[ \t]*<meta name="robots"[^>]*>\n?/gi, '')
+    .replace(/[ \t]*<link rel="(?:canonical|alternate)"[^>]*>\n?/gi, '')
+    .replace(/[ \t]*<meta (?:property="og:|name="twitter:)[^>]*>\n?/gi, '')
+    .replace(/[ \t]*<script type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
 
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(page.title)}</title>`);
   if (/<meta\s+name="description"/i.test(html)) {

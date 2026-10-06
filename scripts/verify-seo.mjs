@@ -6,6 +6,11 @@ const out = resolve(root, 'dist');
 const read = (path) => readFileSync(resolve(out, path), 'utf8');
 const report = [];
 let failures = 0;
+const { siteUrl, indexingEnabled } = JSON.parse(read('seo-build.json'));
+const expectedRobots = indexingEnabled
+  ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
+  : 'noindex,nofollow,noarchive';
+const count = (html, pattern) => (html.match(pattern) || []).length;
 
 function check(label, condition, detail = '') {
   const ok = Boolean(condition);
@@ -30,8 +35,10 @@ for (const path of [...htmlPages, 'sitemap.xml', 'robots.txt']) {
 for (const path of htmlPages) {
   if (!existsSync(resolve(out, path))) continue;
   const html = read(path);
-  check(`${path} canonical`, /<link rel="canonical" href="https:\/\/ascensionmowngeaux\.vercel\.app\//.test(html));
-  check(`${path} staging robots`, /<meta name="robots" content="noindex,nofollow,noarchive">/.test(html));
+  check(`${path} canonical`, html.includes(`<link rel="canonical" href="${siteUrl}/`));
+  check(`${path} robots`, html.includes(`<meta name="robots" content="${expectedRobots}">`));
+  check(`${path} single SEO block`, count(html, /<link rel="canonical"/g) === 1 && count(html, /<meta name="robots"/g) === 1 && count(html, /application\/ld\+json/g) === 1);
+  check(`${path} no vercel.app URLs`, !/vercel\.app/.test(html));
   check(`${path} Open Graph`, /<meta property="og:title"/.test(html));
   check(`${path} schema`, /<script type="application\/ld\+json">/.test(html));
   check(`${path} no Livingston`, !/Livingston/i.test(html), /Livingston/i.test(html) ? 'Livingston still present' : '');
@@ -78,12 +85,15 @@ if (existsSync(resolve(out, 'services/dirt-work-site-work.html'))) {
 if (existsSync(resolve(out, 'sitemap.xml'))) {
   const sitemap = read('sitemap.xml');
   for (const path of ['/', '/services/lawn-care.html', '/services/landscaping.html', '/services/irrigation.html', '/services/dirt-work-site-work.html', '/services/soft-washing-pressure-washing.html']) {
-    check(`sitemap ${path}`, sitemap.includes(`https://ascensionmowngeaux.vercel.app${path}`));
+    check(`sitemap ${path}`, sitemap.includes(`${siteUrl}${path}`));
   }
 }
 
 if (existsSync(resolve(out, 'robots.txt'))) {
-  check('robots staging block', read('robots.txt') === 'User-agent: *\nDisallow: /\n', JSON.stringify(read('robots.txt')));
+  const expected = indexingEnabled
+    ? `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
+    : 'User-agent: *\nDisallow: /\n';
+  check(`robots.txt ${indexingEnabled ? 'allows crawling' : 'staging block'}`, read('robots.txt') === expected, JSON.stringify(read('robots.txt')));
 }
 
 if (existsSync(resolve(out, 'js/main.js'))) {
