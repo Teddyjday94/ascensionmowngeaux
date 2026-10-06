@@ -7,5 +7,8 @@
     "build": "node scripts/build-seo.mjs",
     "postbuild": "node scripts/postbuild-seo.mjs && node scripts/verify-seo.mjs",
     "test": "node --test tests/*.test.mjs && npm run build"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
