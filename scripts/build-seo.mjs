@@ -289,7 +289,7 @@ function injectSeo(html, page, service = null) {
   // Drop any SEO block already baked into the source file so it is never duplicated.
   html = html
     .replace(/[ \t]*<meta name="robots"[^>]*>\n?/gi, '')
-    .replace(/[ \t]*<link rel="(?:canonical|alternate)"[^>]*>\n?/gi, '')
+    .replace(/[ \t]*<link rel="(?:canonical|alternate|icon|shortcut icon|apple-touch-icon)"[^>]*>\n?/gi, '')
     .replace(/[ \t]*<meta (?:property="og:|name="twitter:)[^>]*>\n?/gi, '')
     .replace(/[ \t]*<script type="application\/ld\+json">[\s\S]*?<\/script>\n?/gi, '');
 
@@ -304,6 +304,11 @@ function injectSeo(html, page, service = null) {
     `<meta name="robots" content="${robots}">`,
     `<link rel="canonical" href="${canonical}">`,
     '<link rel="alternate" hreflang="en-US" href="' + canonical + '">',
+    // Google Search only shows favicons sized in multiples of 48px, served from a stable root path.
+    `<link rel="icon" href="/favicon.ico" sizes="48x48">`,
+    `<link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png">`,
+    `<link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">`,
+    `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
     `<meta property="og:type" content="website">`,
     `<meta property="og:site_name" content="${escapeHtml(businessName)}">`,
     `<meta property="og:title" content="${escapeHtml(page.title)}">`,
@@ -452,6 +457,7 @@ async function copyDir(name) {
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
 for (const dir of ['css', 'js', 'images', 'media']) await copyDir(dir);
+for (const file of ['favicon.ico', 'apple-touch-icon.png']) await copyDir(file);
 
 for (const [file, page] of Object.entries(pages)) {
   const source = resolve(root, file);
