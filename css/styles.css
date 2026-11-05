@@ -847,6 +847,14 @@ textarea { font: inherit; }
   gap: 0.8rem;
 }
 
+/* Before/after cards are ordered in pairs; on desktop each column stacks one pair. */
+@media (min-width: 901px) {
+  .gallery-grid.gallery-pairs {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+  }
+}
+
 .gallery-grid .photo-placeholder {
   min-height: 300px;
   border-radius: var(--radius-sm);

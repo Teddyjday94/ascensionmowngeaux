@@ -96,6 +96,11 @@ const services = [
     intro: 'From overgrown beds to new landscape installs, the work starts with the conditions already on the property: drainage, sun, traffic, maintenance needs and the way the finished space should look from the road.',
     image: '../images/landscape-bed-front-01.jpg',
     imageAlt: 'Completed landscape bed installation with fresh edging and plantings',
+    sectionImage: {
+      base: '../images/media/recent/front-corner-bed-wide',
+      alt: 'Finished foundation bed with dark mulch, black edging and new plantings along a brick home',
+      position: 'center 72%',
+    },
     pills: ['Landscape cleanup', 'Design & build', 'Bed renovation', 'Hedge pruning', 'Mulch', 'Sod installation'],
     details: [
       ['Landscape Cleanup', 'Overgrowth, weeds, tired material and unshaped shrubs are cleaned up so existing beds look intentional again.'],
@@ -144,6 +149,11 @@ const services = [
     intro: 'Grading, leveling, excavation and material movement are often the part of a project that everything else depends on. The crew can shape the site, move material and haul debris so the next phase is not waiting on another contractor.',
     image: '../images/excavator-dirt-work.jpg',
     imageAlt: 'Excavator performing residential dirt work and site preparation',
+    sectionImage: {
+      base: '../images/media/recent/rough-grade-01',
+      alt: 'Freshly graded yard with equipment tracks beside a dark brick home and a mature tree',
+      position: 'center 62%',
+    },
     pills: ['Grading', 'Leveling', 'Excavation', 'Trenching', 'Material delivery', 'Debris haul-off'],
     details: [
       ['Grading & Leveling', 'Low areas, uneven ground and project surfaces can be reshaped for drainage, sod, access or future construction work.'],
@@ -425,7 +435,7 @@ ${serviceHeader()}
         <div class="service-pill-row" aria-label="${escapeHtml(service.name)} service highlights">${pills}</div>
         <div class="service-detail-grid">${detailCards}</div>
       </div>
-      <div class="service-visual"><figure class="service-photo"><img src="${service.image}" alt="${escapeHtml(service.imageAlt)}"><figcaption>${escapeHtml(service.name)} project work in the local service area.</figcaption></figure></div>
+      <div class="service-visual"><figure class="service-photo">${sectionPhoto(service)}<figcaption>${escapeHtml(service.name)} project work in the local service area.</figcaption></figure></div>
     </div>
   </section>
   <section class="service-section service-section-parchment" id="${service.secondaryId}">
@@ -447,6 +457,12 @@ ${serviceFooter()}
 </body>
 </html>`;
   return injectSeo(html, page, service);
+}
+
+function sectionPhoto(service) {
+  const photo = service.sectionImage;
+  if (!photo) return `<img src="${service.image}" alt="${escapeHtml(service.imageAlt)}">`;
+  return `<img src="${photo.base}-800w.jpg" srcset="${photo.base}-800w.jpg 800w, ${photo.base}.jpg 1800w" sizes="(max-width: 900px) 100vw, 50vw" style="object-position: ${photo.position}" alt="${escapeHtml(photo.alt)}" loading="lazy">`;
 }
 
 async function copyDir(name) {
